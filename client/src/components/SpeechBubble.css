@@ -1,0 +1,74 @@
+/* Outer bubble container (the whole card) */
+.speech-bubble {
+  position: relative;
+  width: 605.762px;
+  height: 963.802px;
+  max-width: 100%; /* keeps it from overflowing on tiny screens */
+  transform: rotate(0.287deg);
+  transform-origin: center;
+}
+
+/* SVG background fills the bubble area */
+.speech-bubble__bg {
+  position: absolute;
+  inset: 0;         /* top: 0; right: 0; bottom: 0; left: 0 */
+  z-index: 0;
+}
+
+.speech-bubble__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* The actual bubble shape – matches your Figma SVG styling */
+.speech-bubble__shape {
+  fill: var(--Secondary-Color, #F4F1BB);
+  stroke: var(--text-Color, #66635B);
+  stroke-width: 6px;
+}
+
+/* Content layout – your flex rules */
+.speech-bubble__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  /* adjust padding if you need to avoid the tail area more/less */
+  padding: 10% 5% 10% 28%;
+}
+
+/* Base text typography (16px, 150%) */
+.speech-bubble__text {
+  color: var(--text-Color, #66635B);
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+
+/* H4 inside the bubble – 20px bold "Arial Hebrew" */
+.speech-bubble__text h4 {
+  margin: 0 0 8px;
+  color: var(--text-Color, #66635B);
+  font-family: "Arial Hebrew", Arial, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+/* Optional helper class for the “— a Helsin…” line */
+.speech-bubble__text .signature {
+  margin-top: 12px;
+  color: var(--text-Color, #66635B);
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 150%;
+}
+

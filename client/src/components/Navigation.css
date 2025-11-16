@@ -1,0 +1,131 @@
+/* Navigation Styles */
+.navigation {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: transparent;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  position: relative;
+  width: 100%;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.nav-logo-link {
+  display: block;
+  text-decoration: none;
+}
+
+.nav-logo-outer {
+  flex: none;
+  transform: rotate(337.306deg);
+}
+
+.nav-logo-inner {
+  background-color: var(--color-primary);
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 0;
+  position: relative;
+  border-radius: 50px;
+  width: 162.081px;
+  height: 118.848px;
+}
+
+.nav-logo-text-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  flex: none;
+  transform: rotate(345.815deg);
+}
+
+.nav-logo-text {
+  color: var(--color-secondary);
+  text-align: center;
+  position: relative;
+  font-family: 'Spicy Rice', sans-serif;
+  font-size: 40px;
+  line-height: 0.87;
+  width: 124px;
+}
+
+.nav-menu-container {
+  display: flex;
+  gap: 21px;
+  align-items: center;
+  padding: 10px 0;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  position: relative;
+  flex-shrink: 0;
+  font-family: 'Squada One', sans-serif;
+  font-size: 36px;
+  line-height: normal;
+  width: 680px;
+  height: 52px;
+  color: var(--color-text);
+}
+
+.nav-link-item {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+}
+
+.nav-link.active {
+  color: var(--color-primary);
+}
+
+.nav-resume {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  position: relative;
+  flex-shrink: 0;
+  width: 166px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    width: auto;
+    font-size: 24px;
+    flex-wrap: wrap;
+  }
+}

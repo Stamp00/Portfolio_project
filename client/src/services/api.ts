@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Project, ContactMessage, PersonalInfo, Skill, Experience, Education } from '../types';
+import type { Project, ContactMessage, PersonalInfo, Skill, Experience, Education, HeroInfo, AboutInfo, ContactInfo } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -58,7 +58,7 @@ export const adminLogin = async (email: string, password: string): Promise<{ tok
 
 // Content API
 
-// Personal Info
+// Personal Info (Legacy)
 export const getPersonalInfo = async (): Promise<PersonalInfo> => {
   const response = await api.get('/content/personal-info');
   return response.data;
@@ -66,6 +66,39 @@ export const getPersonalInfo = async (): Promise<PersonalInfo> => {
 
 export const updatePersonalInfo = async (data: Partial<PersonalInfo>): Promise<PersonalInfo> => {
   const response = await api.put('/content/personal-info', data);
+  return response.data;
+};
+
+// Hero Info
+export const getHeroInfo = async (): Promise<HeroInfo> => {
+  const response = await api.get('/content/hero-info');
+  return response.data;
+};
+
+export const updateHeroInfo = async (data: Partial<HeroInfo>): Promise<HeroInfo> => {
+  const response = await api.put('/content/hero-info', data);
+  return response.data;
+};
+
+// About Info
+export const getAboutInfo = async (): Promise<AboutInfo> => {
+  const response = await api.get('/content/about-info');
+  return response.data;
+};
+
+export const updateAboutInfo = async (data: Partial<AboutInfo>): Promise<AboutInfo> => {
+  const response = await api.put('/content/about-info', data);
+  return response.data;
+};
+
+// Contact Info
+export const getContactInfo = async (): Promise<ContactInfo> => {
+  const response = await api.get('/content/contact-info');
+  return response.data;
+};
+
+export const updateContactInfo = async (data: Partial<ContactInfo>): Promise<ContactInfo> => {
+  const response = await api.put('/content/contact-info', data);
   return response.data;
 };
 

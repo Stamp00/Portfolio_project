@@ -1,23 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, {
-  getPersonalInfo,
-  updatePersonalInfo,
+  getHeroInfo,
+  updateHeroInfo,
+  getAboutInfo,
+  updateAboutInfo,
+  getContactInfo,
+  updateContactInfo,
   getAllSkills,
   createSkill,
-  updateSkill,
   deleteSkill,
-  getAllExperience,
-  createExperience,
-  updateExperience,
-  deleteExperience,
-  getAllEducation,
-  createEducation,
-  updateEducation,
-  deleteEducation,
   seedDatabase,
 } from '../../services/api';
-import type { PersonalInfo, Skill, Experience, Education } from '../../types';
+import type { HeroInfo, AboutInfo, ContactInfo, Skill } from '../../types';
+import { deviconIcons } from '../../utils/deviconIcons';
+import './AdminDashboard.css';
 
 interface Message {
   _id: string;
@@ -29,61 +26,94 @@ interface Message {
   createdAt: string;
 }
 
-type Tab = 'personal' | 'skills' | 'experience' | 'education' | 'messages';
+type Tab = 'hero' | 'about' | 'contact' | 'skills' | 'projects' | 'messages';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<Tab>('personal');
+  const [activeTab, setActiveTab] = useState<Tab>('hero');
   const [loading, setLoading] = useState(true);
 
-  // Personal Info
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(null);
-  const [personalFormData, setPersonalFormData] = useState({
-    name: '',
-    title: '',
+  // Hero Info
+  const [heroInfo, setHeroInfo] = useState<HeroInfo | null>(null);
+  const [heroFormData, setHeroFormData] = useState({ header: '', subheader: '', text: '' });
+
+  // About Info
+  const [aboutInfo, setAboutInfo] = useState<AboutInfo | null>(null);
+  const [aboutFormData, setAboutFormData] = useState({ text: '' });
+
+  // Contact Info
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [contactFormData, setContactFormData] = useState({
     email: '',
+    phone: '',
     location: '',
-    bio: '',
     githubUrl: '',
     linkedinUrl: '',
+    twitterUrl: '',
   });
 
   // Skills
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [newSkill, setNewSkill] = useState({ name: '', category: '', order: 0 });
-  const [editingSkillId, setEditingSkillId] = useState<string | null>(null);
-
-  // Experience
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [newExperience, setNewExperience] = useState({ title: '', company: '', period: '', description: '', order: 0 });
-  const [editingExpId, setEditingExpId] = useState<string | null>(null);
-
-  // Education
-  const [education, setEducation] = useState<Education[]>([]);
-  const [newEducation, setNewEducation] = useState({ degree: '', institution: '', year: '', description: '', order: 0 });
-  const [editingEduId, setEditingEduId] = useState<string | null>(null);
+  const [newSkill, setNewSkill] = useState({
+    name: '',
+    category: 'Frontend' as 'Frontend' | 'Backend' | 'DevOps' | 'UI/UX' | 'AI',
+    icon: '',
+    order: 0,
+  });
+  const [iconSearch, setIconSearch] = useState('');
+  const [showIconGrid, setShowIconGrid] = useState(false);
 
   // Messages
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const availableIcons = deviconIcons.map((icon) => ({
+    value: icon.url,
+    label: icon.displayName,
+  }));
+
+  const filteredIcons = availableIcons.filter((icon) =>
+    icon.label.toLowerCase().includes(iconSearch.toLowerCase())
+  );
+
+  const categories: Array<'Frontend' | 'Backend' | 'DevOps' | 'UI/UX' | 'AI'> = [
+    'Frontend',
+    'Backend',
+    'DevOps',
+    'UI/UX',
+    'AI',
+  ];
+
+  // Check authentication on mount
   useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      navigate('/admin/login');
+      return;
+    }
     fetchAllData();
-  }, []);
+  }, [navigate]);
 
   const fetchAllData = async () => {
     try {
-      const [personalData, skillsData, experienceData, educationData] = await Promise.all([
-        getPersonalInfo(),
+      const [
+        heroData,
+        aboutData,
+        contactData,
+        skillsData,
+      ] = await Promise.all([
+        getHeroInfo(),
+        getAboutInfo(),
+        getContactInfo(),
         getAllSkills(),
-        getAllExperience(),
-        getAllEducation(),
       ]);
 
-      setPersonalInfo(personalData);
-      setPersonalFormData(personalData);
+      setHeroInfo(heroData);
+      setHeroFormData(heroData);
+      setAboutInfo(aboutData);
+      setAboutFormData(aboutData);
+      setContactInfo(contactData);
+      setContactFormData(contactData);
       setSkills(skillsData);
-      setExperiences(experienceData);
-      setEducation(educationData);
 
       await fetchMessages();
     } catch (error) {
@@ -106,9 +136,49 @@ const AdminDashboard = () => {
     }
   };
 
+  // Hero Info Handlers
+  const handleUpdateHeroInfo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const updated = await updateHeroInfo(heroFormData);
+      setHeroInfo(updated);
+      alert('Hero info updated successfully!');
+    } catch (error) {
+      console.error('Failed to update hero info:', error);
+      alert('Failed to update hero info');
+    }
+  };
+
+  // About Info Handlers
+  const handleUpdateAboutInfo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const updated = await updateAboutInfo(aboutFormData);
+      setAboutInfo(updated);
+      alert('About info updated successfully!');
+    } catch (error) {
+      console.error('Failed to update about info:', error);
+      alert('Failed to update about info');
+    }
+  };
+
+  // Contact Info Handlers
+  const handleUpdateContactInfo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const updated = await updateContactInfo(contactFormData);
+      setContactInfo(updated);
+      alert('Contact info updated successfully!');
+    } catch (error) {
+      console.error('Failed to update contact info:', error);
+      alert('Failed to update contact info');
+    }
+  };
+
   // Seed Database
   const handleSeedDatabase = async () => {
-    if (!window.confirm('This will replace all content with default data. Continue?')) return;
+    if (!window.confirm('This will replace all content with default data. Continue?'))
+      return;
 
     try {
       await seedDatabase();
@@ -120,26 +190,15 @@ const AdminDashboard = () => {
     }
   };
 
-  // Personal Info Handlers
-  const handleUpdatePersonalInfo = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const updated = await updatePersonalInfo(personalFormData);
-      setPersonalInfo(updated);
-      alert('Personal info updated successfully!');
-    } catch (error) {
-      console.error('Failed to update personal info:', error);
-      alert('Failed to update personal info');
-    }
-  };
-
   // Skill Handlers
   const handleCreateSkill = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const created = await createSkill(newSkill);
       setSkills([...skills, created]);
-      setNewSkill({ name: '', category: '', order: 0 });
+      setNewSkill({ name: '', category: 'Frontend', icon: '', order: 0 });
+      setIconSearch('');
+      setShowIconGrid(false);
       alert('Skill added successfully!');
     } catch (error) {
       console.error('Failed to create skill:', error);
@@ -147,67 +206,29 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleSelectIcon = (iconUrl: string, iconName: string) => {
+    setNewSkill({
+      ...newSkill,
+      icon: iconUrl,
+      name: iconName,
+    });
+    setShowIconGrid(false);
+    setIconSearch('');
+  };
+
   const handleDeleteSkill = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this skill?')) return;
 
     try {
+      console.log('Deleting skill with ID:', id);
       await deleteSkill(id);
-      setSkills(skills.filter(s => s._id !== id));
-    } catch (error) {
+      setSkills(skills.filter((s) => s._id !== id));
+      alert('Skill deleted successfully!');
+    } catch (error: any) {
       console.error('Failed to delete skill:', error);
-      alert('Failed to delete skill');
-    }
-  };
-
-  // Experience Handlers
-  const handleCreateExperience = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const created = await createExperience(newExperience);
-      setExperiences([...experiences, created]);
-      setNewExperience({ title: '', company: '', period: '', description: '', order: 0 });
-      alert('Experience added successfully!');
-    } catch (error) {
-      console.error('Failed to create experience:', error);
-      alert('Failed to add experience');
-    }
-  };
-
-  const handleDeleteExperience = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this experience?')) return;
-
-    try {
-      await deleteExperience(id);
-      setExperiences(experiences.filter(e => e._id !== id));
-    } catch (error) {
-      console.error('Failed to delete experience:', error);
-      alert('Failed to delete experience');
-    }
-  };
-
-  // Education Handlers
-  const handleCreateEducation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const created = await createEducation(newEducation);
-      setEducation([...education, created]);
-      setNewEducation({ degree: '', institution: '', year: '', description: '', order: 0 });
-      alert('Education added successfully!');
-    } catch (error) {
-      console.error('Failed to create education:', error);
-      alert('Failed to add education');
-    }
-  };
-
-  const handleDeleteEducation = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this education?')) return;
-
-    try {
-      await deleteEducation(id);
-      setEducation(education.filter(e => e._id !== id));
-    } catch (error) {
-      console.error('Failed to delete education:', error);
-      alert('Failed to delete education');
+      const errorMessage =
+        error?.response?.data?.error || error?.message || 'Failed to delete skill';
+      alert(`Error: ${errorMessage}`);
     }
   };
 
@@ -215,9 +236,7 @@ const AdminDashboard = () => {
   const handleMarkAsRead = async (id: string) => {
     try {
       await api.patch(`/admin/messages/${id}/read`);
-      setMessages(messages.map(msg =>
-        msg._id === id ? { ...msg, read: true } : msg
-      ));
+      setMessages(messages.map((msg) => (msg._id === id ? { ...msg, read: true } : msg)));
     } catch (error) {
       console.error('Failed to mark as read:', error);
     }
@@ -228,7 +247,7 @@ const AdminDashboard = () => {
 
     try {
       await api.delete(`/admin/messages/${id}`);
-      setMessages(messages.filter(msg => msg._id !== id));
+      setMessages(messages.filter((msg) => msg._id !== id));
     } catch (error) {
       console.error('Failed to delete message:', error);
     }
@@ -239,58 +258,48 @@ const AdminDashboard = () => {
     navigate('/admin/login');
   };
 
-  if (loading) {
+  // Don't render anything if not authenticated or still loading
+  if (loading || !localStorage.getItem('adminToken')) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600"></div>
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
       </div>
     );
   }
 
   const tabs = [
-    { id: 'personal' as Tab, label: 'Personal Info' },
+    { id: 'hero' as Tab, label: 'Hero Section' },
+    { id: 'about' as Tab, label: 'About Me' },
+    { id: 'contact' as Tab, label: 'Contact Info' },
     { id: 'skills' as Tab, label: 'Skills' },
-    { id: 'experience' as Tab, label: 'Experience' },
-    { id: 'education' as Tab, label: 'Education' },
+    { id: 'projects' as Tab, label: 'Projects & Certificates' },
     { id: 'messages' as Tab, label: `Messages (${messages.length})` },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="admin-container">
+      <div className="admin-wrapper">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Admin Dashboard
-          </h1>
-          <div className="flex gap-4">
-            <button
-              onClick={handleSeedDatabase}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            >
+        <div className="admin-header">
+          <h1 className="admin-title">Admin Dashboard</h1>
+          <div className="admin-header-buttons">
+            <button onClick={handleSeedDatabase} className="btn btn-seed">
               Seed Database
             </button>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
+            <button onClick={handleLogout} className="btn btn-logout">
               Logout
             </button>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
-          <nav className="-mb-px flex space-x-8">
+        <div className="tabs-container">
+          <nav className="tabs-nav">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab.id
-                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-                }`}
+                className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
               >
                 {tab.label}
               </button>
@@ -298,92 +307,154 @@ const AdminDashboard = () => {
           </nav>
         </div>
 
-        {/* Personal Info Tab */}
-        {activeTab === 'personal' && personalInfo && (
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-              Personal Information
-            </h2>
-            <form onSubmit={handleUpdatePersonalInfo} className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Name</label>
-                  <input
-                    type="text"
-                    value={personalFormData.name}
-                    onChange={(e) => setPersonalFormData({ ...personalFormData, name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Title</label>
-                  <input
-                    type="text"
-                    value={personalFormData.title}
-                    onChange={(e) => setPersonalFormData({ ...personalFormData, title: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
-                  <input
-                    type="email"
-                    value={personalFormData.email}
-                    onChange={(e) => setPersonalFormData({ ...personalFormData, email: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Location</label>
-                  <input
-                    type="text"
-                    value={personalFormData.location}
-                    onChange={(e) => setPersonalFormData({ ...personalFormData, location: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                    required
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Bio</label>
-                <textarea
-                  value={personalFormData.bio}
-                  onChange={(e) => setPersonalFormData({ ...personalFormData, bio: e.target.value })}
-                  rows={10}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+        {/* Hero Section Tab */}
+        {activeTab === 'hero' && heroInfo && (
+          <div className="card">
+            <h2 className="card-title">Hero Section</h2>
+            <form onSubmit={handleUpdateHeroInfo} className="form">
+              <div className="form-group">
+                <label className="form-label">Header</label>
+                <input
+                  type="text"
+                  value={heroFormData.header}
+                  onChange={(e) => setHeroFormData({ ...heroFormData, header: e.target.value })}
+                  className="form-input"
+                  placeholder="Main heading"
                   required
                 />
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">GitHub URL</label>
+              <div className="form-group">
+                <label className="form-label">Subheader</label>
+                <input
+                  type="text"
+                  value={heroFormData.subheader}
+                  onChange={(e) => setHeroFormData({ ...heroFormData, subheader: e.target.value })}
+                  className="form-input"
+                  placeholder="Subtitle or job title"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Text</label>
+                <textarea
+                  value={heroFormData.text}
+                  onChange={(e) => setHeroFormData({ ...heroFormData, text: e.target.value })}
+                  rows={4}
+                  className="form-textarea"
+                  placeholder="Hero section description"
+                  required
+                />
+              </div>
+              <button type="submit" className="submit-button">
+                Update Hero Section
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* About Me Tab */}
+        {activeTab === 'about' && aboutInfo && (
+          <div className="card">
+            <h2 className="card-title">About Me</h2>
+            <form onSubmit={handleUpdateAboutInfo} className="form">
+              <div className="form-group">
+                <label className="form-label">About Me Text</label>
+                <textarea
+                  value={aboutFormData.text}
+                  onChange={(e) => setAboutFormData({ ...aboutFormData, text: e.target.value })}
+                  rows={15}
+                  className="form-textarea"
+                  placeholder="Tell your story..."
+                  required
+                />
+              </div>
+              <button type="submit" className="submit-button">
+                Update About Me
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Contact Info Tab */}
+        {activeTab === 'contact' && contactInfo && (
+          <div className="card">
+            <h2 className="card-title">Contact Information</h2>
+            <form onSubmit={handleUpdateContactInfo} className="form">
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Email</label>
                   <input
-                    type="url"
-                    value={personalFormData.githubUrl}
-                    onChange={(e) => setPersonalFormData({ ...personalFormData, githubUrl: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                    type="email"
+                    value={contactFormData.email}
+                    onChange={(e) =>
+                      setContactFormData({ ...contactFormData, email: e.target.value })
+                    }
+                    className="form-input"
+                    required
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">LinkedIn URL</label>
+                <div className="form-group">
+                  <label className="form-label">Phone</label>
                   <input
-                    type="url"
-                    value={personalFormData.linkedinUrl}
-                    onChange={(e) => setPersonalFormData({ ...personalFormData, linkedinUrl: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                    type="tel"
+                    value={contactFormData.phone}
+                    onChange={(e) =>
+                      setContactFormData({ ...contactFormData, phone: e.target.value })
+                    }
+                    className="form-input"
+                    required
                   />
                 </div>
               </div>
-              <button
-                type="submit"
-                className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                Update Personal Info
+              <div className="form-group">
+                <label className="form-label">Location</label>
+                <input
+                  type="text"
+                  value={contactFormData.location}
+                  onChange={(e) =>
+                    setContactFormData({ ...contactFormData, location: e.target.value })
+                  }
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">GitHub URL</label>
+                  <input
+                    type="url"
+                    value={contactFormData.githubUrl}
+                    onChange={(e) =>
+                      setContactFormData({ ...contactFormData, githubUrl: e.target.value })
+                    }
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">LinkedIn URL</label>
+                  <input
+                    type="url"
+                    value={contactFormData.linkedinUrl}
+                    onChange={(e) =>
+                      setContactFormData({ ...contactFormData, linkedinUrl: e.target.value })
+                    }
+                    className="form-input"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Twitter URL (optional)</label>
+                <input
+                  type="url"
+                  value={contactFormData.twitterUrl}
+                  onChange={(e) =>
+                    setContactFormData({ ...contactFormData, twitterUrl: e.target.value })
+                  }
+                  className="form-input"
+                />
+              </div>
+              <button type="submit" className="submit-button">
+                Update Contact Info
               </button>
             </form>
           </div>
@@ -391,57 +462,109 @@ const AdminDashboard = () => {
 
         {/* Skills Tab */}
         {activeTab === 'skills' && (
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Add New Skill</h2>
-              <form onSubmit={handleCreateSkill} className="space-y-4">
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Name</label>
+          <div>
+            <div className="card">
+              <h2 className="card-title">Add New Skill</h2>
+              <form onSubmit={handleCreateSkill} className="form">
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Name</label>
                     <input
                       type="text"
                       value={newSkill.name}
                       onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                      className="form-input"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Category</label>
-                    <input
-                      type="text"
+
+                  <div className="form-group">
+                    <label className="form-label">Category</label>
+                    <select
                       value={newSkill.category}
-                      onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      placeholder="e.g., Frontend, Backend"
+                      onChange={(e) => {
+                        const selectedCategory = e.target.value as any;
+                        const categorySkills = skills.filter((s) => s.category === selectedCategory);
+                        const maxOrder =
+                          categorySkills.length > 0
+                            ? Math.max(...categorySkills.map((s) => s.order))
+                            : -1;
+                        setNewSkill({
+                          ...newSkill,
+                          category: selectedCategory,
+                          order: maxOrder + 1,
+                        });
+                      }}
+                      className="form-select"
                       required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Order</label>
-                    <input
-                      type="number"
-                      value={newSkill.order}
-                      onChange={(e) => setNewSkill({ ...newSkill, order: parseInt(e.target.value) })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      required
-                    />
+                    >
+                      {categories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                >
+
+                <div className="form-group">
+                  <label className="form-label">Icon</label>
+                  <div className="icon-selector-container">
+                    {newSkill.icon && (
+                      <div className="icon-preview">
+                        <img src={newSkill.icon} alt="Selected icon" />
+                      </div>
+                    )}
+
+                    <input
+                      type="text"
+                      placeholder="Search icons..."
+                      value={iconSearch}
+                      onChange={(e) => setIconSearch(e.target.value)}
+                      onFocus={() => setShowIconGrid(true)}
+                      className="icon-search-input"
+                    />
+
+                    {showIconGrid && (
+                      <div className="icon-grid">
+                        {filteredIcons.map((icon) => (
+                          <div
+                            key={icon.value}
+                            className={`icon-grid-item ${
+                              newSkill.icon === icon.value ? 'selected' : ''
+                            }`}
+                            onClick={() => handleSelectIcon(icon.value, icon.label)}
+                          >
+                            <img src={icon.value} alt={icon.label} />
+                            <span className="icon-grid-item-label">{icon.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Order</label>
+                  <input
+                    type="number"
+                    value={newSkill.order}
+                    onChange={(e) => setNewSkill({ ...newSkill, order: parseInt(e.target.value) })}
+                    className="form-input"
+                    required
+                  />
+                  <p className="form-hint">Auto-set to next available. Lower numbers appear first.</p>
+                </div>
+
+                <button type="submit" className="submit-button">
                   Add Skill
                 </button>
               </form>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-                Current Skills ({skills.length})
-              </h2>
-              <div className="space-y-2">
+            <div className="card">
+              <h2 className="card-title">Current Skills ({skills.length})</h2>
+              <div>
                 {Object.entries(
                   skills.reduce((acc, skill) => {
                     if (!acc[skill.category]) acc[skill.category] = [];
@@ -449,20 +572,35 @@ const AdminDashboard = () => {
                     return acc;
                   }, {} as Record<string, Skill[]>)
                 ).map(([category, categorySkills]) => (
-                  <div key={category} className="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
-                    <h3 className="font-bold text-lg mb-2">{category}</h3>
-                    <div className="space-y-2">
-                      {categorySkills.map((skill) => (
-                        <div key={skill._id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded">
-                          <span>{skill.name} (Order: {skill.order})</span>
-                          <button
-                            onClick={() => handleDeleteSkill(skill._id)}
-                            className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      ))}
+                  <div key={category} className="skills-category">
+                    <h3 className="skills-category-title">
+                      {category} ({categorySkills.length} skills)
+                    </h3>
+                    <div>
+                      {categorySkills
+                        .sort((a, b) => a.order - b.order)
+                        .map((skill) => (
+                          <div key={skill._id} className="skill-item">
+                            <div className="skill-item-content">
+                              {skill.icon && (
+                                <div className="skill-icon">
+                                  <img src={skill.icon} alt={skill.name} />
+                                </div>
+                              )}
+                              <span className="skill-name">
+                                {skill.name}{' '}
+                                <span className="skill-order">(Order: {skill.order})</span>
+                              </span>
+                            </div>
+
+                            <button
+                              onClick={() => handleDeleteSkill(skill._id)}
+                              className="btn btn-danger"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 ))}
@@ -471,268 +609,57 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        {/* Experience Tab */}
-        {activeTab === 'experience' && (
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Add New Experience</h2>
-              <form onSubmit={handleCreateExperience} className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Title</label>
-                    <input
-                      type="text"
-                      value={newExperience.title}
-                      onChange={(e) => setNewExperience({ ...newExperience, title: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Company</label>
-                    <input
-                      type="text"
-                      value={newExperience.company}
-                      onChange={(e) => setNewExperience({ ...newExperience, company: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Period</label>
-                    <input
-                      type="text"
-                      value={newExperience.period}
-                      onChange={(e) => setNewExperience({ ...newExperience, period: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      placeholder="e.g., May 2025 - Present"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Order</label>
-                    <input
-                      type="number"
-                      value={newExperience.order}
-                      onChange={(e) => setNewExperience({ ...newExperience, order: parseInt(e.target.value) })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Description</label>
-                  <textarea
-                    value={newExperience.description}
-                    onChange={(e) => setNewExperience({ ...newExperience, description: e.target.value })}
-                    rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                >
-                  Add Experience
-                </button>
-              </form>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-                Current Experience ({experiences.length})
-              </h2>
-              <div className="space-y-4">
-                {experiences.map((exp) => (
-                  <div key={exp._id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-bold text-lg">{exp.title}</h3>
-                        <p className="text-gray-600 dark:text-gray-400">{exp.company} • {exp.period}</p>
-                      </div>
-                      <button
-                        onClick={() => handleDeleteExperience(exp._id)}
-                        className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                    <p className="text-gray-700 dark:text-gray-300">{exp.description}</p>
-                    <p className="text-sm text-gray-500 mt-2">Order: {exp.order}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Education Tab */}
-        {activeTab === 'education' && (
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Add New Education</h2>
-              <form onSubmit={handleCreateEducation} className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Degree</label>
-                    <input
-                      type="text"
-                      value={newEducation.degree}
-                      onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Institution</label>
-                    <input
-                      type="text"
-                      value={newEducation.institution}
-                      onChange={(e) => setNewEducation({ ...newEducation, institution: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Year</label>
-                    <input
-                      type="text"
-                      value={newEducation.year}
-                      onChange={(e) => setNewEducation({ ...newEducation, year: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      placeholder="e.g., 2020 - 2026"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Order</label>
-                    <input
-                      type="number"
-                      value={newEducation.order}
-                      onChange={(e) => setNewEducation({ ...newEducation, order: parseInt(e.target.value) })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Description</label>
-                  <textarea
-                    value={newEducation.description}
-                    onChange={(e) => setNewEducation({ ...newEducation, description: e.target.value })}
-                    rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                >
-                  Add Education
-                </button>
-              </form>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-                Current Education ({education.length})
-              </h2>
-              <div className="space-y-4">
-                {education.map((edu) => (
-                  <div key={edu._id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-bold text-lg">{edu.degree}</h3>
-                        <p className="text-gray-600 dark:text-gray-400">{edu.institution} • {edu.year}</p>
-                      </div>
-                      <button
-                        onClick={() => handleDeleteEducation(edu._id)}
-                        className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                    <p className="text-gray-700 dark:text-gray-300">{edu.description}</p>
-                    <p className="text-sm text-gray-500 mt-2">Order: {edu.order}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {/* Projects & Certificates Tab */}
+        {activeTab === 'projects' && (
+          <div className="card">
+            <h2 className="card-title">Projects & Certificates</h2>
+            <p className="empty-state">Coming soon... This section will let you manage your projects and certificates.</p>
           </div>
         )}
 
         {/* Messages Tab */}
         {activeTab === 'messages' && (
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
-            <div className="px-4 py-5 sm:px-6">
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-                Contact Messages ({messages.length})
-              </h2>
-            </div>
-            <div className="border-t border-gray-200 dark:border-gray-700">
+          <div className="card">
+            <h2 className="card-title">Contact Messages ({messages.length})</h2>
+            <div className="messages-list">
               {messages.length === 0 ? (
-                <p className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                  No messages yet.
-                </p>
+                <p className="empty-state">No messages yet.</p>
               ) : (
-                <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                <div>
                   {messages.map((message) => (
-                    <li
-                      key={message._id}
-                      className={`px-4 py-4 ${
-                        message.read ? 'bg-gray-50 dark:bg-gray-700/50' : ''
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                                {message.name}
-                              </p>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {message.email}
-                              </p>
-                            </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                              {new Date(message.createdAt).toLocaleDateString()}
-                            </div>
-                          </div>
-                          {message.subject && (
-                            <p className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                              Subject: {message.subject}
-                            </p>
-                          )}
-                          <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
-                            {message.message}
-                          </p>
+                    <div key={message._id} className={`message-item ${message.read ? 'read' : ''}`}>
+                      <div className="message-header">
+                        <div>
+                          <p className="message-sender">{message.name}</p>
+                          <p className="message-email">{message.email}</p>
+                        </div>
+                        <div className="message-date">
+                          {new Date(message.createdAt).toLocaleDateString()}
                         </div>
                       </div>
-                      <div className="mt-4 flex gap-2">
+                      {message.subject && (
+                        <p className="message-subject">Subject: {message.subject}</p>
+                      )}
+                      <p className="message-content">{message.message}</p>
+                      <div className="message-actions">
                         {!message.read && (
                           <button
                             onClick={() => handleMarkAsRead(message._id)}
-                            className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                            className="btn btn-primary"
                           >
                             Mark as Read
                           </button>
                         )}
                         <button
                           onClick={() => handleDeleteMessage(message._id)}
-                          className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                          className="btn btn-danger"
                         >
                           Delete
                         </button>
                       </div>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               )}
             </div>
           </div>

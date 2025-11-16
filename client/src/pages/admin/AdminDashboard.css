@@ -1,0 +1,484 @@
+/* Admin Dashboard Styles */
+
+.admin-container {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: 32px 0;
+}
+
+.admin-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Header */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.admin-title {
+  font-family: 'Spicy Rice', sans-serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: var(--color-primary);
+  letter-spacing: 4px;
+}
+
+.admin-header-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: 3px solid transparent;
+  cursor: pointer;
+  font-family: 'Squada One', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  transition: all 0.1s steps(2, end);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.btn-seed {
+  background-color: var(--color-tertiary);
+  color: var(--color-white);
+}
+
+.btn-logout {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn-primary {
+  background-color: var(--color-tertiary);
+  color: var(--color-white);
+}
+
+.btn-danger {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 8px 16px;
+  font-size: 18px;
+}
+
+/* Tabs */
+.tabs-container {
+  border-bottom: 3px solid var(--color-text);
+  margin-bottom: 24px;
+}
+
+.tabs-nav {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  padding: 12px 20px;
+  border: 3px solid transparent;
+  border-radius: 10px 10px 0 0;
+  background-color: var(--color-secondary);
+  cursor: pointer;
+  font-family: 'Squada One', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--color-text);
+  transition: all 0.1s steps(2, end);
+  box-shadow: 2px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.tab-button:hover {
+  background-color: var(--color-tertiary);
+  transform: translateY(-2px);
+}
+
+.tab-button.active {
+  background-color: var(--color-tertiary);
+  border-color: var(--color-white);
+  color: var(--color-white);
+  box-shadow: 4px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Cards */
+.card {
+  background-color: var(--color-secondary);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+  border: 3px solid var(--color-text);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card-title {
+  font-family: 'Squada One', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 24px;
+  color: var(--color-text);
+}
+
+/* Forms */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--color-text);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 3px solid var(--color-text);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-tertiary);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-hint {
+  font-size: 14px;
+  color: var(--color-text);
+  margin-top: 4px;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 14px 28px;
+  background-color: var(--color-tertiary);
+  color: var(--color-white);
+  border: 3px solid transparent;
+  border-radius: 10px;
+  font-family: 'Squada One', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.1s steps(2, end);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+.submit-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.submit-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Icon Selector */
+.icon-selector-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.icon-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 3px solid var(--color-text);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  background-color: var(--color-white);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.icon-search-input:focus {
+  outline: none;
+  border-color: var(--color-tertiary);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 12px;
+  border: 3px solid var(--color-text);
+  border-radius: 8px;
+  background-color: var(--color-white);
+}
+
+.icon-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 3px solid var(--color-text);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.1s steps(2, end);
+  background-color: var(--color-secondary);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.icon-grid-item:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.icon-grid-item.selected {
+  border-color: var(--color-tertiary);
+  background-color: var(--color-tertiary);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+.icon-grid-item img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.icon-grid-item-label {
+  font-size: 10px;
+  text-align: center;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.icon-preview {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+
+.icon-preview img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+/* Skills List */
+.skills-category {
+  border-bottom: 3px solid var(--color-text);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.skills-category-title {
+  font-family: 'Squada One', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: var(--color-primary);
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: var(--color-white);
+  border: 3px solid var(--color-text);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.skill-item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skill-icon {
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-secondary);
+  border: 2px solid var(--color-text);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skill-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.skill-name {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.skill-order {
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* Messages */
+.messages-list {
+  border-top: 3px solid var(--color-text);
+}
+
+.message-item {
+  padding: 16px;
+  border-bottom: 3px solid var(--color-text);
+  background-color: var(--color-white);
+}
+
+.message-item.read {
+  background-color: var(--color-secondary);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.message-sender {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.message-email {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.message-date {
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.message-subject {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 8px;
+}
+
+.message-content {
+  font-size: 14px;
+  color: var(--color-text);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.message-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.empty-state {
+  padding: 48px;
+  text-align: center;
+  font-family: 'Squada One', sans-serif;
+  font-size: 24px;
+  color: var(--color-text);
+}
+
+/* Loading */
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-background);
+}
+
+.loading-spinner {
+  width: 64px;
+  height: 64px;
+  border: 6px solid var(--color-secondary);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .icon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
+}

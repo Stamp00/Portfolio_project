@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface ISkill extends Document {
   name: string;
   category: string;
+  icon: string;
   order: number;
   createdAt: Date;
   updatedAt: Date;
@@ -18,6 +19,12 @@ const SkillSchema: Schema = new Schema(
     category: {
       type: String,
       required: [true, 'Category is required'],
+      enum: ['Frontend', 'Backend', 'DevOps', 'UI/UX', 'AI'],
+      trim: true,
+    },
+    icon: {
+      type: String,
+      required: [true, 'Icon path is required'],
       trim: true,
     },
     order: {

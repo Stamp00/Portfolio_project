@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import { getPersonalInfo, updatePersonalInfo } from '../controllers/personalInfoController';
+import { getHeroInfo, updateHeroInfo } from '../controllers/heroInfoController';
+import { getAboutInfo, updateAboutInfo } from '../controllers/aboutInfoController';
+import { getContactInfo, updateContactInfo } from '../controllers/contactInfoController';
 import { getAllSkills, createSkill, updateSkill, deleteSkill } from '../controllers/skillController';
 import { getAllExperience, createExperience, updateExperience, deleteExperience } from '../controllers/experienceController';
 import { getAllEducation, createEducation, updateEducation, deleteEducation } from '../controllers/educationController';
@@ -10,12 +13,18 @@ const router = Router();
 
 // Public routes (for frontend to fetch data)
 router.get('/personal-info', getPersonalInfo);
+router.get('/hero-info', getHeroInfo);
+router.get('/about-info', getAboutInfo);
+router.get('/contact-info', getContactInfo);
 router.get('/skills', getAllSkills);
 router.get('/experience', getAllExperience);
 router.get('/education', getAllEducation);
 
 // Protected routes (admin only)
 router.put('/personal-info', authenticateAdmin, updatePersonalInfo);
+router.put('/hero-info', authenticateAdmin, updateHeroInfo);
+router.put('/about-info', authenticateAdmin, updateAboutInfo);
+router.put('/contact-info', authenticateAdmin, updateContactInfo);
 
 router.post('/skills', authenticateAdmin, createSkill);
 router.put('/skills/:id', authenticateAdmin, updateSkill);

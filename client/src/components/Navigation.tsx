@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import Button from './Button';
+import './Navigation.css';
 
 const Navigation = () => {
-  const { theme, toggleTheme } = useTheme();
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState('hero');
 
   const navLinks = [
     { name: 'Home', id: 'home' },
+    { name: 'My Stack', id: 'skills' },
     { name: 'About', id: 'about' },
-    { name: 'Skills', id: 'skills' },
     { name: 'Projects', id: 'projects' },
-    { name: 'Contact', id: 'contact' },
+    { name: 'Contact Info', id: 'contact' },
   ];
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const Navigation = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Call once to set initial state
+    handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -40,7 +40,7 @@ const Navigation = () => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      const navHeight = 64; // Height of the navigation bar
+      const navHeight = 80;
       const elementPosition = element.offsetTop - navHeight;
       window.scrollTo({
         top: elementPosition,
@@ -50,56 +50,52 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="bg-white/80 dark:bg-[#1e293b]/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex-shrink-0">
-            <a
-              href="#home"
-              onClick={(e) => handleClick(e, 'home')}
-              className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
-              SJ
-            </a>
-          </div>
+    <nav className="navigation">
+      <div className="nav-container">
+        {/* Logo */}
+        <div className="nav-logo">
+          <a
+            href="#home"
+            onClick={(e) => handleClick(e, 'home')}
+            className="nav-logo-link"
+          >
+            <div className="nav-logo-outer">
+              <div className="nav-logo-inner">
+                <div className="nav-logo-text-wrapper">
+                  <p className="nav-logo-text">
+                    Samuel Jaari
+                  </p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
 
-          <div className="hidden md:flex space-x-1">
+        {/* Menu and Resume */}
+        <div className="nav-menu-container">
+          {/* Menu Links */}
+          <div className="nav-links">
             {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={`#${link.id}`}
-                onClick={(e) => handleClick(e, link.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeSection === link.id
-                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10'
-                    : 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                }`}
-              >
-                {link.name}
-              </a>
+              <p key={link.id} className="nav-link-item">
+                <a
+                  href={`#${link.id}`}
+                  onClick={(e) => handleClick(e, link.id)}
+                  className={`nav-link ${activeSection === link.id ? 'active' : ''}`}
+                >
+                  {link.name}
+                </a>
+              </p>
             ))}
           </div>
 
-          <div className="flex items-center">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              aria-label="Toggle theme"
+          {/* Get Resume Button */}
+          <div className="nav-resume">
+            <Button
+              onClick={() => window.open('/resume.pdf', '_blank')}
+              className="button-resume"
             >
-              {theme === 'light' ? (
-                <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
-            </button>
+              <span>Get Resume</span>
+            </Button>
           </div>
         </div>
       </div>

@@ -1,0 +1,31 @@
+/* Button Styles */
+.button {
+  background-color: var(--color-tertiary);
+  color: var(--color-white);
+  padding: 16px 0px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  text-decoration: none;
+  display: flex;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.button-resume {
+  background-color: var(--color-tertiary);
+  width: 100%;
+  height: 63px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-resume span {
+  font-family: 'Squada One', sans-serif;
+  font-size: 36px;
+  line-height: normal;
+}

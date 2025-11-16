@@ -26,6 +26,29 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
+export interface HeroInfo {
+  _id: string;
+  header: string;
+  subheader: string;
+  text: string;
+}
+
+export interface AboutInfo {
+  _id: string;
+  text: string;
+}
+
+export interface ContactInfo {
+  _id: string;
+  email: string;
+  phone: string;
+  location: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  twitterUrl?: string;
+}
+
+// Legacy - keep for backward compatibility
 export interface PersonalInfo {
   _id: string;
   name: string;
@@ -40,7 +63,8 @@ export interface PersonalInfo {
 export interface Skill {
   _id: string;
   name: string;
-  category: string;
+  category: 'Frontend' | 'Backend' | 'DevOps' | 'UI/UX' | 'AI';
+  icon: string;
   order: number;
 }
 

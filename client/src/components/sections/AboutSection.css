@@ -1,0 +1,76 @@
+/* About Section Styles */
+.about-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+}
+
+.about-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.about-grid {
+  display: flex;
+  padding: 0 43px;
+  justify-content: center;
+  align-items: flex-end;
+  gap: -138px;
+  align-self: stretch;
+}
+
+.about-left-column {
+  display: flex;
+  padding-top: 34px;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.about-title {
+  color: var(--Primary-Color, #ED6A5A);
+/* H2 */
+  font-family: "Spicy Rice";
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 4px;
+}
+
+.about-character {
+  width: 623px;
+  height: 935px;
+}
+
+.about-speech-column {
+  display: flex;
+  padding: 58px 10px;
+  align-items: center;
+  gap: 10px;
+}
+
+.about-speech-wrapper {
+  width: 610.578px;
+  height: 964.703px;
+}
+
+/* .SpeechBubble {
+  width: 605.762px;
+  height: 963.802px;
+  transform: rotate(0.287deg);
+  flex-shrink: 0;
+  fill: var(--Secondary-Color, #F4F1BB);
+  stroke-width: 6px;
+  stroke: var(--text-Color, #66635B);
+} */
+
+/* Responsive */
+@media (min-width: 768px) {
+  .about-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
