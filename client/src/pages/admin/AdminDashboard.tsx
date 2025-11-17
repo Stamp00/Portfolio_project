@@ -14,6 +14,7 @@ import api, {
 } from '../../services/api';
 import type { HeroInfo, AboutInfo, ContactInfo, Skill } from '../../types';
 import { deviconIcons } from '../../utils/deviconIcons';
+import SpeechBubble from '../../components/SpeechBubble';
 import './AdminDashboard.css';
 
 interface Message {
@@ -356,18 +357,76 @@ const AdminDashboard = () => {
         {activeTab === 'about' && aboutInfo && (
           <div className="card">
             <h2 className="card-title">About Me</h2>
+
+            {/* Formatting Help */}
+            <div className="about-help">
+              <p className="about-help-title">Formatting Tips:</p>
+              <ul className="about-help-list">
+                <li>Use double line breaks to create new paragraphs</li>
+                <li>Start a line with text followed by <code>:</code> to create a bold header (e.g., "Introduction:")</li>
+                <li>Headers are automatically styled larger and bold</li>
+              </ul>
+            </div>
+
             <form onSubmit={handleUpdateAboutInfo} className="form">
-              <div className="form-group">
-                <label className="form-label">About Me Text</label>
-                <textarea
-                  value={aboutFormData.text}
-                  onChange={(e) => setAboutFormData({ ...aboutFormData, text: e.target.value })}
-                  rows={15}
-                  className="form-textarea"
-                  placeholder="Tell your story..."
-                  required
-                />
+              <div className="about-editor-container">
+                {/* Left: Text Editor */}
+                <div className="about-editor-panel">
+                  <label className="form-label">Edit Your Story</label>
+                  <textarea
+                    value={aboutFormData.text}
+                    onChange={(e) => setAboutFormData({ ...aboutFormData, text: e.target.value })}
+                    rows={20}
+                    className="form-textarea about-textarea"
+                    placeholder="Tell your story...
+
+Example:
+Introduction: This is the header paragraph.
+
+This is a regular paragraph with more details."
+                    required
+                  />
+                </div>
+
+                {/* Right: Live Preview */}
+                <div className="about-preview-panel">
+                  <label className="form-label">Live Preview</label>
+                  <div className="about-preview-wrapper">
+                    <SpeechBubble>
+                      {aboutFormData.text.split('\n\n').map((paragraph, index) => {
+                        const colonIndex = paragraph.indexOf(':');
+
+                        if (colonIndex > 0 && colonIndex < 50) {
+                          const header = paragraph.substring(0, colonIndex + 1);
+                          const content = paragraph.substring(colonIndex + 1).trim();
+
+                          return (
+                            <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px' }}>
+                              <span style={{ fontWeight: 'bold', fontSize: '20px', color: '#66635B' }}>
+                                {header}
+                              </span>
+                              {content && (
+                                <span style={{ fontSize: '16px', color: '#66635B' }}>
+                                  {' '}{content}
+                                </span>
+                              )}
+                            </p>
+                          );
+                        } else if (paragraph.trim() === '') {
+                          return <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px' }}>&nbsp;</p>;
+                        } else {
+                          return (
+                            <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px', fontSize: '16px', color: '#66635B' }}>
+                              {paragraph}
+                            </p>
+                          );
+                        }
+                      })}
+                    </SpeechBubble>
+                  </div>
+                </div>
               </div>
+
               <button type="submit" className="submit-button">
                 Update About Me
               </button>

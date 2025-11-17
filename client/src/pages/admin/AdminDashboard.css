@@ -466,6 +466,79 @@
   }
 }
 
+/* About Me Editor Styles */
+.about-help {
+  background-color: var(--color-white);
+  border: 3px solid var(--color-text);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.about-help-title {
+  font-family: 'Squada One', sans-serif;
+  font-size: 20px;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+.about-help-list {
+  list-style: disc;
+  margin-left: 20px;
+  color: var(--color-text);
+}
+
+.about-help-list li {
+  font-size: 14px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.about-help-list code {
+  background-color: var(--color-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  border: 2px solid var(--color-text);
+}
+
+.about-editor-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.about-editor-panel,
+.about-preview-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-textarea {
+  min-height: 400px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.about-preview-wrapper {
+  background-color: var(--color-background);
+  border: 3px solid var(--color-text);
+  border-radius: 10px;
+  padding: 24px;
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.about-preview-wrapper .speech-bubble {
+  transform: scale(0.85);
+  transform-origin: top left;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .form-row {
@@ -480,5 +553,13 @@
 
   .icon-grid {
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
+
+  .about-editor-container {
+    grid-template-columns: 1fr;
+  }
+
+  .about-preview-wrapper {
+    max-height: 400px;
   }
 }
