@@ -7,39 +7,88 @@ interface AboutSectionProps {
 }
 
 const AboutSection = ({ bio }: AboutSectionProps) => {
-  // Function to parse bio text and format with bold headers
+  // Function to parse bio text with formatting
   const formatBioText = (text: string) => {
     const paragraphs = text.split('\n\n');
 
-    return paragraphs.map((paragraph, index) => {
-      // Check if paragraph starts with a bold header (ends with :)
+    return paragraphs.map((paragraph, pIndex) => {
       const colonIndex = paragraph.indexOf(':');
 
+      // Helper function to parse inline formatting
+      const parseInlineFormatting = (text: string) => {
+        const parts: React.ReactNode[] = [];
+        let lastIndex = 0;
+
+        // Combined regex for bold, italic, and links
+        const regex = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(\[([^\]]+)\]\(([^)]+)\))/g;
+        let match;
+
+        while ((match = regex.exec(text)) !== null) {
+          // Add text before match
+          if (match.index > lastIndex) {
+            parts.push(text.substring(lastIndex, match.index));
+          }
+
+          if (match[1]) {
+            // Bold: **text**
+            parts.push(<strong key={match.index}>{match[2]}</strong>);
+          } else if (match[3]) {
+            // Italic: *text*
+            parts.push(<em key={match.index}>{match[4]}</em>);
+          } else if (match[5]) {
+            // Link: [text](url)
+            parts.push(<a key={match.index} href={match[7]} target="_blank" rel="noopener noreferrer" style={{color: '#ED6A5A', textDecoration: 'underline'}}>{match[6]}</a>);
+          }
+
+          lastIndex = match.index + match[0].length;
+        }
+
+        // Add remaining text
+        if (lastIndex < text.length) {
+          parts.push(text.substring(lastIndex));
+        }
+
+        return parts.length > 0 ? parts : text;
+      };
+
+      // Check if paragraph is a list
+      if (paragraph.trim().startsWith('- ')) {
+        const listItems = paragraph.split('\n').filter(line => line.trim().startsWith('- '));
+        return (
+          <ul key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px', marginLeft: '20px', fontSize: '16px', color: '#66635B' }}>
+            {listItems.map((item, i) => (
+              <li key={i}>{parseInlineFormatting(item.substring(2).trim())}</li>
+            ))}
+          </ul>
+        );
+      }
+
+      // Check if paragraph starts with a bold header (ends with :)
       if (colonIndex > 0 && colonIndex < 50) {
         // This is likely a header
         const header = paragraph.substring(0, colonIndex + 1);
         const content = paragraph.substring(colonIndex + 1).trim();
 
         return (
-          <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px' }}>
+          <p key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px' }}>
             <span style={{ fontWeight: 'bold', fontSize: '20px', color: '#66635B' }}>
-              {header}
+              {parseInlineFormatting(header)}
             </span>
             {content && (
               <span style={{ fontSize: '16px', color: '#66635B' }}>
-                {' '}{content}
+                {' '}{parseInlineFormatting(content)}
               </span>
             )}
           </p>
         );
       } else if (paragraph.trim() === '') {
         // Empty paragraph for spacing
-        return <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px', fontSize: '16px' }}>&nbsp;</p>;
+        return <p key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px', fontSize: '16px' }}>&nbsp;</p>;
       } else {
         // Regular paragraph
         return (
-          <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px', fontSize: '16px', color: '#66635B' }}>
-            {paragraph}
+          <p key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px', fontSize: '16px', color: '#66635B' }}>
+            {parseInlineFormatting(paragraph)}
           </p>
         );
       }

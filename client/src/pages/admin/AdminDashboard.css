@@ -482,25 +482,77 @@
   margin-bottom: 12px;
 }
 
-.about-help-list {
-  list-style: disc;
-  margin-left: 20px;
-  color: var(--color-text);
+.about-help-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 24px;
 }
 
-.about-help-list li {
+.about-help-item {
   font-size: 14px;
-  margin-bottom: 6px;
-  line-height: 1.4;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.about-help-list code {
+.about-help-item code {
   background-color: var(--color-secondary);
   padding: 2px 6px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 13px;
   border: 2px solid var(--color-text);
+  white-space: nowrap;
+}
+
+/* Editor Toolbar */
+.editor-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  background-color: var(--color-white);
+  border: 3px solid var(--color-text);
+  border-radius: 8px 8px 0 0;
+  margin-bottom: -3px;
+  align-items: center;
+}
+
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 6px 8px;
+  background-color: var(--color-secondary);
+  border: 3px solid var(--color-text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Squada One', sans-serif;
+  font-size: 18px;
+  transition: all 0.1s steps(2, end);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+  color: var(--color-text);
+}
+
+.toolbar-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+  background-color: var(--color-tertiary);
+  color: var(--color-white);
+}
+
+.toolbar-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.toolbar-divider {
+  width: 2px;
+  height: 24px;
+  background-color: var(--color-text);
+  margin: 0 4px;
 }
 
 .about-editor-container {
@@ -521,6 +573,7 @@
   font-family: 'Courier New', monospace;
   font-size: 14px;
   line-height: 1.6;
+  border-radius: 0 0 8px 8px !important;
 }
 
 .about-preview-wrapper {
@@ -553,6 +606,14 @@
 
   .icon-grid {
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
+
+  .about-help-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-toolbar {
+    flex-wrap: wrap;
   }
 
   .about-editor-container {

@@ -360,12 +360,27 @@ const AdminDashboard = () => {
 
             {/* Formatting Help */}
             <div className="about-help">
-              <p className="about-help-title">Formatting Tips:</p>
-              <ul className="about-help-list">
-                <li>Use double line breaks to create new paragraphs</li>
-                <li>Start a line with text followed by <code>:</code> to create a bold header (e.g., "Introduction:")</li>
-                <li>Headers are automatically styled larger and bold</li>
-              </ul>
+              <p className="about-help-title">Formatting Guide:</p>
+              <div className="about-help-grid">
+                <div className="about-help-item">
+                  <code>**bold text**</code> → <strong>bold text</strong>
+                </div>
+                <div className="about-help-item">
+                  <code>*italic text*</code> → <em>italic text</em>
+                </div>
+                <div className="about-help-item">
+                  <code>Header:</code> → <strong style={{fontSize: '18px'}}>Header:</strong>
+                </div>
+                <div className="about-help-item">
+                  <code>[link text](url)</code> → link
+                </div>
+                <div className="about-help-item">
+                  <code>- List item</code> → • List item
+                </div>
+                <div className="about-help-item">
+                  Double line break → New paragraph
+                </div>
+              </div>
             </div>
 
             <form onSubmit={handleUpdateAboutInfo} className="form">
@@ -373,6 +388,102 @@ const AdminDashboard = () => {
                 {/* Left: Text Editor */}
                 <div className="about-editor-panel">
                   <label className="form-label">Edit Your Story</label>
+
+                  {/* Formatting Toolbar */}
+                  <div className="editor-toolbar">
+                    <button
+                      type="button"
+                      className="toolbar-btn"
+                      onClick={() => {
+                        const textarea = document.querySelector('.about-textarea') as HTMLTextAreaElement;
+                        const start = textarea.selectionStart;
+                        const end = textarea.selectionEnd;
+                        const selectedText = aboutFormData.text.substring(start, end);
+                        const newText = aboutFormData.text.substring(0, start) + `**${selectedText || 'bold text'}**` + aboutFormData.text.substring(end);
+                        setAboutFormData({ ...aboutFormData, text: newText });
+                        setTimeout(() => textarea.focus(), 0);
+                      }}
+                      title="Bold"
+                    >
+                      <strong>B</strong>
+                    </button>
+                    <button
+                      type="button"
+                      className="toolbar-btn"
+                      onClick={() => {
+                        const textarea = document.querySelector('.about-textarea') as HTMLTextAreaElement;
+                        const start = textarea.selectionStart;
+                        const end = textarea.selectionEnd;
+                        const selectedText = aboutFormData.text.substring(start, end);
+                        const newText = aboutFormData.text.substring(0, start) + `*${selectedText || 'italic text'}*` + aboutFormData.text.substring(end);
+                        setAboutFormData({ ...aboutFormData, text: newText });
+                        setTimeout(() => textarea.focus(), 0);
+                      }}
+                      title="Italic"
+                    >
+                      <em>I</em>
+                    </button>
+                    <div className="toolbar-divider"></div>
+                    <button
+                      type="button"
+                      className="toolbar-btn"
+                      onClick={() => {
+                        const textarea = document.querySelector('.about-textarea') as HTMLTextAreaElement;
+                        const start = textarea.selectionStart;
+                        const selectedText = aboutFormData.text.substring(start, textarea.selectionEnd);
+                        const newText = aboutFormData.text.substring(0, start) + `${selectedText || 'Header'}:` + aboutFormData.text.substring(textarea.selectionEnd);
+                        setAboutFormData({ ...aboutFormData, text: newText });
+                        setTimeout(() => textarea.focus(), 0);
+                      }}
+                      title="Header"
+                    >
+                      H
+                    </button>
+                    <button
+                      type="button"
+                      className="toolbar-btn"
+                      onClick={() => {
+                        const textarea = document.querySelector('.about-textarea') as HTMLTextAreaElement;
+                        const start = textarea.selectionStart;
+                        const newText = aboutFormData.text.substring(0, start) + `[link text](https://example.com)` + aboutFormData.text.substring(start);
+                        setAboutFormData({ ...aboutFormData, text: newText });
+                        setTimeout(() => textarea.focus(), 0);
+                      }}
+                      title="Link"
+                    >
+                      🔗
+                    </button>
+                    <div className="toolbar-divider"></div>
+                    <button
+                      type="button"
+                      className="toolbar-btn"
+                      onClick={() => {
+                        const textarea = document.querySelector('.about-textarea') as HTMLTextAreaElement;
+                        const start = textarea.selectionStart;
+                        const newText = aboutFormData.text.substring(0, start) + `- List item\n` + aboutFormData.text.substring(start);
+                        setAboutFormData({ ...aboutFormData, text: newText });
+                        setTimeout(() => textarea.focus(), 0);
+                      }}
+                      title="Bullet List"
+                    >
+                      •
+                    </button>
+                    <button
+                      type="button"
+                      className="toolbar-btn"
+                      onClick={() => {
+                        const textarea = document.querySelector('.about-textarea') as HTMLTextAreaElement;
+                        const start = textarea.selectionStart;
+                        const newText = aboutFormData.text.substring(0, start) + `\n\n` + aboutFormData.text.substring(start);
+                        setAboutFormData({ ...aboutFormData, text: newText });
+                        setTimeout(() => textarea.focus(), 0);
+                      }}
+                      title="New Paragraph"
+                    >
+                      ¶
+                    </button>
+                  </div>
+
                   <textarea
                     value={aboutFormData.text}
                     onChange={(e) => setAboutFormData({ ...aboutFormData, text: e.target.value })}
@@ -381,9 +492,12 @@ const AdminDashboard = () => {
                     placeholder="Tell your story...
 
 Example:
-Introduction: This is the header paragraph.
+Introduction: This is a **bold** header paragraph.
 
-This is a regular paragraph with more details."
+This is a regular paragraph with *italic* text and a [link](https://example.com).
+
+- Bullet point one
+- Bullet point two"
                     required
                   />
                 </div>
@@ -393,31 +507,82 @@ This is a regular paragraph with more details."
                   <label className="form-label">Live Preview</label>
                   <div className="about-preview-wrapper">
                     <SpeechBubble>
-                      {aboutFormData.text.split('\n\n').map((paragraph, index) => {
+                      {aboutFormData.text.split('\n\n').map((paragraph, pIndex) => {
                         const colonIndex = paragraph.indexOf(':');
 
+                        // Helper function to parse inline formatting
+                        const parseInlineFormatting = (text: string) => {
+                          const parts: React.ReactNode[] = [];
+                          let lastIndex = 0;
+
+                          // Combined regex for bold, italic, and links
+                          const regex = /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(\[([^\]]+)\]\(([^)]+)\))/g;
+                          let match;
+
+                          while ((match = regex.exec(text)) !== null) {
+                            // Add text before match
+                            if (match.index > lastIndex) {
+                              parts.push(text.substring(lastIndex, match.index));
+                            }
+
+                            if (match[1]) {
+                              // Bold: **text**
+                              parts.push(<strong key={match.index}>{match[2]}</strong>);
+                            } else if (match[3]) {
+                              // Italic: *text*
+                              parts.push(<em key={match.index}>{match[4]}</em>);
+                            } else if (match[5]) {
+                              // Link: [text](url)
+                              parts.push(<a key={match.index} href={match[7]} target="_blank" rel="noopener noreferrer" style={{color: '#ED6A5A', textDecoration: 'underline'}}>{match[6]}</a>);
+                            }
+
+                            lastIndex = match.index + match[0].length;
+                          }
+
+                          // Add remaining text
+                          if (lastIndex < text.length) {
+                            parts.push(text.substring(lastIndex));
+                          }
+
+                          return parts.length > 0 ? parts : text;
+                        };
+
+                        // Check if paragraph is a list
+                        if (paragraph.trim().startsWith('- ')) {
+                          const listItems = paragraph.split('\n').filter(line => line.trim().startsWith('- '));
+                          return (
+                            <ul key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px', marginLeft: '20px', fontSize: '16px', color: '#66635B' }}>
+                              {listItems.map((item, i) => (
+                                <li key={i}>{parseInlineFormatting(item.substring(2).trim())}</li>
+                              ))}
+                            </ul>
+                          );
+                        }
+
+                        // Header paragraph (ends with :)
                         if (colonIndex > 0 && colonIndex < 50) {
                           const header = paragraph.substring(0, colonIndex + 1);
                           const content = paragraph.substring(colonIndex + 1).trim();
 
                           return (
-                            <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px' }}>
+                            <p key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px' }}>
                               <span style={{ fontWeight: 'bold', fontSize: '20px', color: '#66635B' }}>
-                                {header}
+                                {parseInlineFormatting(header)}
                               </span>
                               {content && (
                                 <span style={{ fontSize: '16px', color: '#66635B' }}>
-                                  {' '}{content}
+                                  {' '}{parseInlineFormatting(content)}
                                 </span>
                               )}
                             </p>
                           );
                         } else if (paragraph.trim() === '') {
-                          return <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px' }}>&nbsp;</p>;
+                          return <p key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px' }}>&nbsp;</p>;
                         } else {
+                          // Regular paragraph
                           return (
-                            <p key={index} style={{ lineHeight: '1.5', marginBottom: '16px', fontSize: '16px', color: '#66635B' }}>
-                              {paragraph}
+                            <p key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px', fontSize: '16px', color: '#66635B' }}>
+                              {parseInlineFormatting(paragraph)}
                             </p>
                           );
                         }
