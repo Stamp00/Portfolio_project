@@ -30,10 +30,15 @@ app.use(cors({
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+      return callback(null, true);
     }
+
+    // In production, also allow if origin matches pattern
+    if (origin && (origin.includes('.vercel.app') || origin.includes('.onrender.com'))) {
+      return callback(null, true);
+    }
+
+    return callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
