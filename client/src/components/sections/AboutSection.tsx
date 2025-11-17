@@ -12,8 +12,6 @@ const AboutSection = ({ bio }: AboutSectionProps) => {
     const paragraphs = text.split('\n\n');
 
     return paragraphs.map((paragraph, pIndex) => {
-      const colonIndex = paragraph.indexOf(':');
-
       // Helper function to parse inline formatting
       const parseInlineFormatting = (text: string) => {
         const parts: React.ReactNode[] = [];
@@ -63,16 +61,25 @@ const AboutSection = ({ bio }: AboutSectionProps) => {
         );
       }
 
-      // Check if paragraph starts with a bold header (ends with :)
-      if (colonIndex > 0 && colonIndex < 50) {
-        // This is likely a header
-        const header = paragraph.substring(0, colonIndex + 1);
-        const content = paragraph.substring(colonIndex + 1).trim();
+      // Check if paragraph starts with a header (# prefix)
+      if (paragraph.trim().startsWith('# ')) {
+        // This is a header
+        const textAfterHash = paragraph.trim().substring(2); // Remove '# '
+        const endHashIndex = textAfterHash.indexOf(' #');
+
+        let headerText = textAfterHash;
+        let content = '';
+
+        if (endHashIndex > 0) {
+          // Found end marker ' #'
+          headerText = textAfterHash.substring(0, endHashIndex);
+          content = textAfterHash.substring(endHashIndex + 2).trim(); // Skip ' #'
+        }
 
         return (
           <p key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px' }}>
             <span style={{ fontWeight: 'bold', fontSize: '20px', color: '#66635B' }}>
-              {parseInlineFormatting(header)}
+              {parseInlineFormatting(headerText)}
             </span>
             {content && (
               <span style={{ fontSize: '16px', color: '#66635B' }}>

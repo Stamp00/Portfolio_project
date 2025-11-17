@@ -1,0 +1,37 @@
+/* Project Folder Component Styles */
+.project-folder {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.1s steps(2, end);
+}
+
+.project-folder:hover {
+  transform: scale(1.05);
+}
+
+.project-folder-icon {
+  width: 137.5px;
+  height: 106px;
+  position: relative;
+}
+
+.project-folder-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.project-folder-name {
+  font-family: 'Squada One', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--color-text);
+  line-height: normal;
+  white-space: nowrap;
+  margin: 0;
+}

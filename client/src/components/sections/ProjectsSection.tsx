@@ -1,5 +1,7 @@
-import ProjectCard from '../ProjectCard';
+import ProjectsRetroScreen from '../ProjectsRetroScreen';
+import FileExplorer, { type FileItem } from '../FileExplorer';
 import type { Project } from '../../types';
+import { convertProjectToFileItem } from '../../utils/projectFileConverter';
 import './ProjectsSection.css';
 
 interface ProjectsSectionProps {
@@ -7,41 +9,39 @@ interface ProjectsSectionProps {
 }
 
 const ProjectsSection = ({ projects }: ProjectsSectionProps) => {
+  // Convert projects to file system structure
+  const fileSystemItems: FileItem[] = projects.map(convertProjectToFileItem);
+
+  // You can add additional files/folders here, like certificates
+  // Example:
+  // fileSystemItems.push({
+  //   id: 'cert-1',
+  //   name: 'AWS Certificate.pdf',
+  //   type: 'certificate',
+  //   content: 'AWS Certified Developer - Associate',
+  //   url: '/certificates/aws-cert.pdf'
+  // });
+
   return (
     <section id="projects" className="projects-section">
       <div className="projects-container">
         <h2 className="projects-title">
-          My Projects
+          Projects & Education
         </h2>
 
-        {/* Retro TV Screen */}
-        <div className="projects-tv">
-          {/* TV Frame */}
-          <div className="projects-tv-frame">
-            {/* TV Screen */}
-            <div className="projects-tv-screen">
-              {projects.length === 0 ? (
-                <div className="projects-empty">
-                  <p className="projects-empty-text">
-                    No projects yet. Check back soon!
-                  </p>
-                </div>
-              ) : (
-                <div className="projects-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  {projects.map((project) => (
-                    <ProjectCard
-                      key={project._id}
-                      name={project.title}
-                      description={project.description}
-                      imageUrl={project.imageUrl}
-                      projectUrl={project.projectUrl}
-                      githubUrl={project.githubUrl}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+        {/* Retro Computer Screen */}
+        <div className="projects-screen-wrapper">
+          <ProjectsRetroScreen>
+            {fileSystemItems.length === 0 ? (
+              <div className="projects-empty">
+                <p className="projects-empty-text">
+                  No projects yet. Check back soon!
+                </p>
+              </div>
+            ) : (
+              <FileExplorer items={fileSystemItems} />
+            )}
+          </ProjectsRetroScreen>
         </div>
       </div>
     </section>

@@ -1,0 +1,24 @@
+# Render Blueprint for Portfolio API
+# This file can be used to deploy to Render using Infrastructure as Code
+
+services:
+  - type: web
+    name: portfolio-api
+    runtime: node
+    region: frankfurt # Change to your preferred region
+    plan: free # or starter/standard for production
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # Set this in Render dashboard (contains sensitive data)
+      - key: JWT_SECRET
+        generateValue: true # Automatically generates a secure random value
+      - key: FRONTEND_URL
+        value: https://your-portfolio.vercel.app # Update after deploying frontend
+    healthCheckPath: /api/health

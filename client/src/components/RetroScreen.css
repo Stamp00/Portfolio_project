@@ -1,0 +1,92 @@
+/* Retro Screen Component Styles */
+.retro-screen {
+  position: relative;
+  width: 100%;
+  max-width: 1409px;
+  height: auto;
+  aspect-ratio: 1409 / 1037;
+}
+
+.retro-screen-outer {
+  position: absolute;
+  inset: 0;
+}
+
+.retro-screen-outer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.retro-screen-inner {
+  position: absolute;
+  inset: 11.15% 7.59% 11.15% 7.54%;
+}
+
+.retro-screen-inner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.retro-screen-bg {
+  position: absolute;
+  inset: 14.27% 9.79% 13.3% 9.73%;
+}
+
+.retro-screen-bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.retro-screen-content {
+  position: absolute;
+  inset: 14.27% 9.79% 13.3% 9.73%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 20px;
+  padding: 40px 50px;
+  overflow: auto;
+}
+
+.retro-screen-button {
+  position: absolute;
+  inset: 90.44% 13.56% 4.78% 79.61%;
+}
+
+.retro-screen-button-shadow {
+  position: absolute;
+  background-color: #85a9a4;
+  border: 5px solid black;
+  border-radius: 14px;
+  inset: 0 -0.25% -0.35% 0;
+}
+
+.retro-screen-button-face {
+  position: absolute;
+  background-color: var(--color-tertiary, #9bc1bc);
+  border: 6px solid black;
+  border-radius: 12px;
+  inset: 0.35% 0.25% 0 -0.51%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .retro-screen-content {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 30px 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .retro-screen-content {
+    grid-template-columns: 1fr;
+    padding: 20px 30px;
+    gap: 15px;
+  }
+}

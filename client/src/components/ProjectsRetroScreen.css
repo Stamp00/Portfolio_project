@@ -1,0 +1,111 @@
+/* Projects Retro Screen Component Styles */
+.projects-retro-screen {
+  position: relative;
+  width: 100%;
+  max-width: 1409px;
+  height: auto;
+  aspect-ratio: 1409 / 1037;
+  margin: 0 auto;
+}
+
+.projects-retro-screen-outer {
+  position: absolute;
+  inset: 0;
+}
+
+.projects-retro-screen-outer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.projects-retro-screen-inner {
+  position: absolute;
+  inset: 11.15% 7.59% 11.15% 7.54%;
+}
+
+.projects-retro-screen-inner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.projects-retro-screen-bg {
+  position: absolute;
+  inset: 14.27% 9.79% 13.3% 9.73%;
+}
+
+.projects-retro-screen-bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.projects-retro-screen-content {
+  position: absolute;
+  inset: 14.27% 9.79% 13.3% 9.73%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: min-content;
+  gap: 30px 20px;
+  padding: 60px 55px;
+  overflow: auto;
+  align-content: start;
+}
+
+.projects-retro-screen-glare {
+  position: absolute;
+  inset: 14.27% 9.79% 13.3% 9.73%;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+}
+
+.projects-retro-screen-glare img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.projects-retro-screen-button {
+  position: absolute;
+  inset: 90.44% 13.56% 4.78% 79.61%;
+}
+
+.projects-retro-screen-button-shadow {
+  position: absolute;
+  background-color: #85a9a4;
+  border: 5px solid black;
+  border-radius: 14px;
+  inset: 0 -0.25% -0.35% 0;
+}
+
+.projects-retro-screen-button-face {
+  position: absolute;
+  background-color: var(--color-tertiary, #9bc1bc);
+  border: 6px solid black;
+  border-radius: 12px;
+  inset: 0.35% 0.25% 0 -0.51%;
+  box-shadow: -10px -10px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .projects-retro-screen-content {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 40px 45px;
+    gap: 25px 15px;
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-retro-screen-content {
+    grid-template-columns: 1fr;
+    padding: 30px 35px;
+    gap: 20px;
+  }
+}

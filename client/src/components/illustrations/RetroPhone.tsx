@@ -1,4 +1,4 @@
-const RetroPhone = ({ className = '' }: { className?: string }) => {
+const RetroPhone = () => {
   return (
     <svg width="668" height="994" viewBox="0 0 668 994" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path opacity="0.5" d="M505.888 765.055C624.163 642.1 -98.3001 762.418 54.6562 840.203C144.245 885.762 217.054 893.984 318.808 870.032C401.617 850.539 449.511 823.664 505.888 765.055Z" fill="#8A8A8A"/>

@@ -1,5 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export interface IProjectFile {
+  id: string;
+  name: string;
+  type: 'image' | 'pdf' | 'link' | 'certificate';
+  url: string;
+  content?: string;
+}
+
 export interface IProject extends Document {
   title: string;
   description: string;
@@ -8,9 +16,19 @@ export interface IProject extends Document {
   projectUrl?: string;
   githubUrl?: string;
   featured: boolean;
+  additionalFiles: IProjectFile[];
+  order: number;
   createdAt: Date;
   updatedAt: Date;
 }
+
+const ProjectFileSchema: Schema = new Schema({
+  id: { type: String, required: true },
+  name: { type: String, required: true },
+  type: { type: String, enum: ['image', 'pdf', 'link', 'certificate'], required: true },
+  url: { type: String, required: true },
+  content: { type: String },
+});
 
 const ProjectSchema: Schema = new Schema(
   {
@@ -43,6 +61,14 @@ const ProjectSchema: Schema = new Schema(
     featured: {
       type: Boolean,
       default: false,
+    },
+    additionalFiles: {
+      type: [ProjectFileSchema],
+      default: [],
+    },
+    order: {
+      type: Number,
+      default: 0,
     },
   },
   {

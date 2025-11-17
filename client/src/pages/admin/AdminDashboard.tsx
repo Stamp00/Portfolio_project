@@ -10,9 +10,12 @@ import api, {
   getAllSkills,
   createSkill,
   deleteSkill,
-  seedDatabase,
+  getProjects,
+  createProject,
+  updateProject,
+  deleteProject,
 } from '../../services/api';
-import type { HeroInfo, AboutInfo, ContactInfo, Skill } from '../../types';
+import type { HeroInfo, AboutInfo, ContactInfo, Skill, Project, ProjectFile } from '../../types';
 import { deviconIcons } from '../../utils/deviconIcons';
 import SpeechBubble from '../../components/SpeechBubble';
 import './AdminDashboard.css';
@@ -64,6 +67,27 @@ const AdminDashboard = () => {
   const [iconSearch, setIconSearch] = useState('');
   const [showIconGrid, setShowIconGrid] = useState(false);
 
+  // Projects
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [newProjectForm, setNewProjectForm] = useState({
+    title: '',
+    description: '',
+    technologies: '',
+    imageUrl: '',
+    projectUrl: '',
+    githubUrl: '',
+    featured: false,
+    additionalFiles: [] as ProjectFile[],
+    order: 0,
+  });
+  const [newFile, setNewFile] = useState({
+    name: '',
+    type: 'link' as 'image' | 'pdf' | 'link' | 'certificate',
+    url: '',
+    content: '',
+  });
+
   // Messages
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -101,11 +125,13 @@ const AdminDashboard = () => {
         aboutData,
         contactData,
         skillsData,
+        projectsData,
       ] = await Promise.all([
         getHeroInfo(),
         getAboutInfo(),
         getContactInfo(),
         getAllSkills(),
+        getProjects(),
       ]);
 
       setHeroInfo(heroData);
@@ -113,8 +139,12 @@ const AdminDashboard = () => {
       setAboutInfo(aboutData);
       setAboutFormData(aboutData);
       setContactInfo(contactData);
-      setContactFormData(contactData);
+      setContactFormData({
+        ...contactData,
+        twitterUrl: contactData.twitterUrl || '',
+      });
       setSkills(skillsData);
+      setProjects(projectsData.sort((a, b) => a.order - b.order));
 
       await fetchMessages();
     } catch (error) {
@@ -176,21 +206,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Seed Database
-  const handleSeedDatabase = async () => {
-    if (!window.confirm('This will replace all content with default data. Continue?'))
-      return;
-
-    try {
-      await seedDatabase();
-      alert('Database seeded successfully!');
-      await fetchAllData();
-    } catch (error) {
-      console.error('Failed to seed database:', error);
-      alert('Failed to seed database');
-    }
-  };
-
   // Skill Handlers
   const handleCreateSkill = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,6 +245,121 @@ const AdminDashboard = () => {
       const errorMessage =
         error?.response?.data?.error || error?.message || 'Failed to delete skill';
       alert(`Error: ${errorMessage}`);
+    }
+  };
+
+  // Project Handlers
+  const handleCreateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const projectData = {
+        ...newProjectForm,
+        technologies: newProjectForm.technologies.split(',').map(t => t.trim()).filter(Boolean),
+        additionalFiles: newProjectForm.additionalFiles,
+      };
+      await createProject(projectData);
+      setNewProjectForm({
+        title: '',
+        description: '',
+        technologies: '',
+        imageUrl: '',
+        projectUrl: '',
+        githubUrl: '',
+        featured: false,
+        additionalFiles: [],
+        order: projects.length,
+      });
+      fetchAllData();
+      alert('Project created successfully!');
+    } catch (error) {
+      console.error('Error creating project:', error);
+      alert('Failed to create project');
+    }
+  };
+
+  const handleUpdateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProject) return;
+    try {
+      const projectData = {
+        ...editingProject,
+        technologies: typeof editingProject.technologies === 'string'
+          ? (editingProject.technologies as string).split(',').map(t => t.trim()).filter(Boolean)
+          : editingProject.technologies,
+      };
+      await updateProject(editingProject._id, projectData);
+      setEditingProject(null);
+      fetchAllData();
+      alert('Project updated successfully!');
+    } catch (error) {
+      console.error('Error updating project:', error);
+      alert('Failed to update project');
+    }
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this project?')) return;
+    try {
+      await deleteProject(id);
+      fetchAllData();
+      alert('Project deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      alert('Failed to delete project');
+    }
+  };
+
+  const handleStartEditProject = (project: Project) => {
+    setEditingProject({
+      ...project,
+      technologies: project.technologies.join(', '),
+    } as any);
+  };
+
+  const handleCancelEditProject = () => {
+    setEditingProject(null);
+  };
+
+  const handleAddFile = () => {
+    if (!newFile.name || !newFile.url) {
+      alert('Please provide file name and URL');
+      return;
+    }
+
+    const file: ProjectFile = {
+      id: Date.now().toString(),
+      name: newFile.name,
+      type: newFile.type,
+      url: newFile.url,
+      content: newFile.content || undefined,
+    };
+
+    if (editingProject) {
+      setEditingProject({
+        ...editingProject,
+        additionalFiles: [...(editingProject.additionalFiles || []), file],
+      });
+    } else {
+      setNewProjectForm({
+        ...newProjectForm,
+        additionalFiles: [...newProjectForm.additionalFiles, file],
+      });
+    }
+
+    setNewFile({ name: '', type: 'link', url: '', content: '' });
+  };
+
+  const handleRemoveFile = (fileId: string) => {
+    if (editingProject) {
+      setEditingProject({
+        ...editingProject,
+        additionalFiles: (editingProject.additionalFiles || []).filter(f => f.id !== fileId),
+      });
+    } else {
+      setNewProjectForm({
+        ...newProjectForm,
+        additionalFiles: newProjectForm.additionalFiles.filter(f => f.id !== fileId),
+      });
     }
   };
 
@@ -284,9 +414,6 @@ const AdminDashboard = () => {
         <div className="admin-header">
           <h1 className="admin-title">Admin Dashboard</h1>
           <div className="admin-header-buttons">
-            <button onClick={handleSeedDatabase} className="btn btn-seed">
-              Seed Database
-            </button>
             <button onClick={handleLogout} className="btn btn-logout">
               Logout
             </button>
@@ -369,7 +496,7 @@ const AdminDashboard = () => {
                   <code>*italic text*</code> → <em>italic text</em>
                 </div>
                 <div className="about-help-item">
-                  <code>Header:</code> → <strong style={{fontSize: '18px'}}>Header:</strong>
+                  <code># Header</code> → <strong style={{fontSize: '18px'}}>Header</strong>
                 </div>
                 <div className="about-help-item">
                   <code>[link text](url)</code> → link
@@ -430,8 +557,9 @@ const AdminDashboard = () => {
                       onClick={() => {
                         const textarea = document.querySelector('.about-textarea') as HTMLTextAreaElement;
                         const start = textarea.selectionStart;
-                        const selectedText = aboutFormData.text.substring(start, textarea.selectionEnd);
-                        const newText = aboutFormData.text.substring(0, start) + `${selectedText || 'Header'}:` + aboutFormData.text.substring(textarea.selectionEnd);
+                        const end = textarea.selectionEnd;
+                        const selectedText = aboutFormData.text.substring(start, end);
+                        const newText = aboutFormData.text.substring(0, start) + `# ${selectedText || 'Header'}` + aboutFormData.text.substring(end);
                         setAboutFormData({ ...aboutFormData, text: newText });
                         setTimeout(() => textarea.focus(), 0);
                       }}
@@ -508,8 +636,6 @@ This is a regular paragraph with *italic* text and a [link](https://example.com)
                   <div className="about-preview-wrapper">
                     <SpeechBubble>
                       {aboutFormData.text.split('\n\n').map((paragraph, pIndex) => {
-                        const colonIndex = paragraph.indexOf(':');
-
                         // Helper function to parse inline formatting
                         const parseInlineFormatting = (text: string) => {
                           const parts: React.ReactNode[] = [];
@@ -559,15 +685,24 @@ This is a regular paragraph with *italic* text and a [link](https://example.com)
                           );
                         }
 
-                        // Header paragraph (ends with :)
-                        if (colonIndex > 0 && colonIndex < 50) {
-                          const header = paragraph.substring(0, colonIndex + 1);
-                          const content = paragraph.substring(colonIndex + 1).trim();
+                        // Header paragraph (starts with #)
+                        if (paragraph.trim().startsWith('# ')) {
+                          const textAfterHash = paragraph.trim().substring(2); // Remove '# '
+                          const endHashIndex = textAfterHash.indexOf(' #');
+
+                          let headerText = textAfterHash;
+                          let content = '';
+
+                          if (endHashIndex > 0) {
+                            // Found end marker ' #'
+                            headerText = textAfterHash.substring(0, endHashIndex);
+                            content = textAfterHash.substring(endHashIndex + 2).trim(); // Skip ' #'
+                          }
 
                           return (
                             <p key={pIndex} style={{ lineHeight: '1.5', marginBottom: '16px' }}>
                               <span style={{ fontWeight: 'bold', fontSize: '20px', color: '#66635B' }}>
-                                {parseInlineFormatting(header)}
+                                {parseInlineFormatting(headerText)}
                               </span>
                               {content && (
                                 <span style={{ fontSize: '16px', color: '#66635B' }}>
@@ -833,11 +968,407 @@ This is a regular paragraph with *italic* text and a [link](https://example.com)
           </div>
         )}
 
-        {/* Projects & Certificates Tab */}
+        {/* Projects & Education Tab */}
         {activeTab === 'projects' && (
           <div className="card">
-            <h2 className="card-title">Projects & Certificates</h2>
-            <p className="empty-state">Coming soon... This section will let you manage your projects and certificates.</p>
+            <h2 className="card-title">Projects & Education</h2>
+
+            {/* Create New Project Form */}
+            {!editingProject && (
+              <div className="form-section">
+                <h3 className="section-subtitle">Create New Project</h3>
+                <form onSubmit={handleCreateProject} className="form">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Project Title *</label>
+                      <input
+                        type="text"
+                        value={newProjectForm.title}
+                        onChange={(e) => setNewProjectForm({ ...newProjectForm, title: e.target.value })}
+                        className="form-input"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Order</label>
+                      <input
+                        type="number"
+                        value={newProjectForm.order}
+                        onChange={(e) => setNewProjectForm({ ...newProjectForm, order: parseInt(e.target.value) })}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Description *</label>
+                    <textarea
+                      value={newProjectForm.description}
+                      onChange={(e) => setNewProjectForm({ ...newProjectForm, description: e.target.value })}
+                      className="form-textarea"
+                      rows={4}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Technologies (comma-separated)</label>
+                      <input
+                        type="text"
+                        value={newProjectForm.technologies}
+                        onChange={(e) => setNewProjectForm({ ...newProjectForm, technologies: e.target.value })}
+                        className="form-input"
+                        placeholder="React, TypeScript, Node.js"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Screenshot URL</label>
+                      <input
+                        type="url"
+                        value={newProjectForm.imageUrl}
+                        onChange={(e) => setNewProjectForm({ ...newProjectForm, imageUrl: e.target.value })}
+                        className="form-input"
+                        placeholder="https://..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Live Demo URL</label>
+                      <input
+                        type="url"
+                        value={newProjectForm.projectUrl}
+                        onChange={(e) => setNewProjectForm({ ...newProjectForm, projectUrl: e.target.value })}
+                        className="form-input"
+                        placeholder="https://..."
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">GitHub URL</label>
+                      <input
+                        type="url"
+                        value={newProjectForm.githubUrl}
+                        onChange={(e) => setNewProjectForm({ ...newProjectForm, githubUrl: e.target.value })}
+                        className="form-input"
+                        placeholder="https://github.com/..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={newProjectForm.featured}
+                        onChange={(e) => setNewProjectForm({ ...newProjectForm, featured: e.target.checked })}
+                      />
+                      Featured Project
+                    </label>
+                  </div>
+
+                  {/* Additional Files Section */}
+                  <div className="files-section">
+                    <h4 className="section-subtitle">Additional Files (Certificates, PDFs, etc.)</h4>
+
+                    {newProjectForm.additionalFiles.length > 0 && (
+                      <div className="files-list">
+                        {newProjectForm.additionalFiles.map((file) => (
+                          <div key={file.id} className="file-item">
+                            <div className="file-info">
+                              <span className="file-type-badge">{file.type}</span>
+                              <span className="file-name">{file.name}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveFile(file.id)}
+                              className="btn-delete-small"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="add-file-form">
+                      <div className="form-row">
+                        <div className="form-group">
+                          <input
+                            type="text"
+                            value={newFile.name}
+                            onChange={(e) => setNewFile({ ...newFile, name: e.target.value })}
+                            className="form-input"
+                            placeholder="File name (e.g., AWS Certificate.pdf)"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <select
+                            value={newFile.type}
+                            onChange={(e) => setNewFile({ ...newFile, type: e.target.value as any })}
+                            className="form-select"
+                          >
+                            <option value="link">Link</option>
+                            <option value="image">Image</option>
+                            <option value="pdf">PDF</option>
+                            <option value="certificate">Certificate</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="url"
+                          value={newFile.url}
+                          onChange={(e) => setNewFile({ ...newFile, url: e.target.value })}
+                          className="form-input"
+                          placeholder="File URL"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <textarea
+                          value={newFile.content}
+                          onChange={(e) => setNewFile({ ...newFile, content: e.target.value })}
+                          className="form-textarea"
+                          rows={2}
+                          placeholder="Description (optional)"
+                        />
+                      </div>
+                      <button type="button" onClick={handleAddFile} className="btn-secondary">
+                        Add File
+                      </button>
+                    </div>
+                  </div>
+
+                  <button type="submit" className="btn-primary">Create Project</button>
+                </form>
+              </div>
+            )}
+
+            {/* Edit Project Form */}
+            {editingProject && (
+              <div className="form-section">
+                <h3 className="section-subtitle">Edit Project: {editingProject.title}</h3>
+                <form onSubmit={handleUpdateProject} className="form">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Project Title *</label>
+                      <input
+                        type="text"
+                        value={editingProject.title}
+                        onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
+                        className="form-input"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Order</label>
+                      <input
+                        type="number"
+                        value={editingProject.order}
+                        onChange={(e) => setEditingProject({ ...editingProject, order: parseInt(e.target.value) })}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Description *</label>
+                    <textarea
+                      value={editingProject.description}
+                      onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
+                      className="form-textarea"
+                      rows={4}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Technologies (comma-separated)</label>
+                      <input
+                        type="text"
+                        value={typeof editingProject.technologies === 'string' ? editingProject.technologies : editingProject.technologies.join(', ')}
+                        onChange={(e) => setEditingProject({ ...editingProject, technologies: e.target.value } as any)}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Screenshot URL</label>
+                      <input
+                        type="url"
+                        value={editingProject.imageUrl || ''}
+                        onChange={(e) => setEditingProject({ ...editingProject, imageUrl: e.target.value })}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Live Demo URL</label>
+                      <input
+                        type="url"
+                        value={editingProject.projectUrl || ''}
+                        onChange={(e) => setEditingProject({ ...editingProject, projectUrl: e.target.value })}
+                        className="form-input"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">GitHub URL</label>
+                      <input
+                        type="url"
+                        value={editingProject.githubUrl || ''}
+                        onChange={(e) => setEditingProject({ ...editingProject, githubUrl: e.target.value })}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={editingProject.featured}
+                        onChange={(e) => setEditingProject({ ...editingProject, featured: e.target.checked })}
+                      />
+                      Featured Project
+                    </label>
+                  </div>
+
+                  {/* Additional Files Section */}
+                  <div className="files-section">
+                    <h4 className="section-subtitle">Additional Files</h4>
+
+                    {(editingProject.additionalFiles || []).length > 0 && (
+                      <div className="files-list">
+                        {editingProject.additionalFiles.map((file) => (
+                          <div key={file.id} className="file-item">
+                            <div className="file-info">
+                              <span className="file-type-badge">{file.type}</span>
+                              <span className="file-name">{file.name}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveFile(file.id)}
+                              className="btn-delete-small"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="add-file-form">
+                      <div className="form-row">
+                        <div className="form-group">
+                          <input
+                            type="text"
+                            value={newFile.name}
+                            onChange={(e) => setNewFile({ ...newFile, name: e.target.value })}
+                            className="form-input"
+                            placeholder="File name"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <select
+                            value={newFile.type}
+                            onChange={(e) => setNewFile({ ...newFile, type: e.target.value as any })}
+                            className="form-select"
+                          >
+                            <option value="link">Link</option>
+                            <option value="image">Image</option>
+                            <option value="pdf">PDF</option>
+                            <option value="certificate">Certificate</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="url"
+                          value={newFile.url}
+                          onChange={(e) => setNewFile({ ...newFile, url: e.target.value })}
+                          className="form-input"
+                          placeholder="File URL"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <textarea
+                          value={newFile.content}
+                          onChange={(e) => setNewFile({ ...newFile, content: e.target.value })}
+                          className="form-textarea"
+                          rows={2}
+                          placeholder="Description"
+                        />
+                      </div>
+                      <button type="button" onClick={handleAddFile} className="btn-secondary">
+                        Add File
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="form-actions">
+                    <button type="submit" className="btn-primary">Update Project</button>
+                    <button type="button" onClick={handleCancelEditProject} className="btn-secondary">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Projects List */}
+            <div className="list-section">
+              <h3 className="section-subtitle">Existing Projects ({projects.length})</h3>
+              {projects.length === 0 ? (
+                <p className="empty-state">No projects yet. Create your first project above!</p>
+              ) : (
+                <div className="items-grid">
+                  {projects.map((project) => (
+                    <div key={project._id} className="item-card">
+                      <div className="item-header">
+                        <h4 className="item-title">{project.title}</h4>
+                        {project.featured && <span className="badge-featured">Featured</span>}
+                      </div>
+                      <p className="item-description">{project.description}</p>
+                      {project.technologies.length > 0 && (
+                        <div className="tech-tags">
+                          {project.technologies.map((tech, idx) => (
+                            <span key={idx} className="tech-tag">{tech}</span>
+                          ))}
+                        </div>
+                      )}
+                      {project.additionalFiles && project.additionalFiles.length > 0 && (
+                        <div className="files-count">
+                          📁 {project.additionalFiles.length} additional file{project.additionalFiles.length !== 1 ? 's' : ''}
+                        </div>
+                      )}
+                      <div className="item-actions">
+                        <button
+                          onClick={() => handleStartEditProject(project)}
+                          className="btn-edit"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProject(project._id)}
+                          className="btn-delete"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 

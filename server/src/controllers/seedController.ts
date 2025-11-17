@@ -6,9 +6,17 @@ import ContactInfo from '../models/ContactInfo';
 import Skill from '../models/Skill';
 import Experience from '../models/Experience';
 import Education from '../models/Education';
+import Project from '../models/Project';
 
 export const seedDatabase = async (req: Request, res: Response) => {
   try {
+    // Only allow seeding in development mode
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(403).json({
+        error: 'Seed route is disabled in production for security reasons'
+      });
+    }
+
     // Clear existing data
     await Promise.all([
       PersonalInfo.deleteMany({}),
@@ -18,6 +26,7 @@ export const seedDatabase = async (req: Request, res: Response) => {
       Skill.deleteMany({}),
       Experience.deleteMany({}),
       Education.deleteMany({}),
+      Project.deleteMany({}),
     ]);
 
     // Seed Personal Info (Legacy - keep for backward compatibility)
@@ -107,6 +116,35 @@ When I'm not coding, you'll find me on the golf course, at the gym, fishing, coo
     });
     await education.save();
 
+    // Seed Projects
+    const portfolioProject = new Project({
+      title: 'Interactive Portfolio Website',
+      description: 'A modern, retro-styled portfolio website featuring a file system interface for browsing projects, dynamic content management through an admin panel, and interactive animations. Built with React, TypeScript, Node.js, and MongoDB.',
+      technologies: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'Figma', 'Vite'],
+      imageUrl: '',
+      projectUrl: '',
+      githubUrl: 'https://github.com/Stamp00',
+      featured: true,
+      additionalFiles: [
+        {
+          id: '1',
+          name: 'README.md',
+          type: 'link',
+          url: 'https://github.com/Stamp00',
+          content: '# Interactive Portfolio\n\nA full-stack portfolio application with:\n- Retro computer screen design with file system interface\n- Admin panel for content management\n- Real-time content updates\n- Custom animations and transitions\n- Responsive design\n\n## Tech Stack\n- Frontend: React, TypeScript, Vite\n- Backend: Node.js, Express\n- Database: MongoDB\n- Design: Figma',
+        },
+        {
+          id: '2',
+          name: 'Features.txt',
+          type: 'link',
+          url: '',
+          content: 'Key Features:\n\n✓ File Explorer Interface - Browse projects like a retro computer file system\n✓ Admin Dashboard - Manage all content without touching code\n✓ Dynamic Content - Hero, About, Contact, Skills, and Projects sections\n✓ Retro Aesthetics - Pixel-perfect designs with stepped animations\n✓ Type-safe - Full TypeScript implementation\n✓ Responsive - Works on all devices\n✓ Custom Components - SpeechBubble, RetroScreen, FileExplorer, and more',
+        },
+      ],
+      order: 0,
+    });
+    await portfolioProject.save();
+
     res.json({
       message: 'Database seeded successfully',
       data: {
@@ -117,6 +155,7 @@ When I'm not coding, you'll find me on the golf course, at the gym, fishing, coo
         skills: skills.length,
         experience: 1,
         education: 1,
+        projects: 1,
       },
     });
   } catch (error) {

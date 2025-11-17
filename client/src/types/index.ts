@@ -1,3 +1,11 @@
+export interface ProjectFile {
+  id: string;
+  name: string;
+  type: 'image' | 'pdf' | 'link' | 'certificate';
+  url: string;
+  content?: string;
+}
+
 export interface Project {
   _id: string;
   title: string;
@@ -7,6 +15,8 @@ export interface Project {
   projectUrl?: string;
   githubUrl?: string;
   featured: boolean;
+  additionalFiles: ProjectFile[];
+  order: number;
   createdAt: string;
   updatedAt: string;
 }
