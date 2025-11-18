@@ -1,11 +1,11 @@
 /* Hero Section Styles */
 .hero-section {
-  padding: 100px 132px;
+  padding: clamp(40px, 10vw, 100px) clamp(20px, 10vw, 132px);
 }
 
 .hero-container {
   display: flex;
-  gap: 55px;
+  gap: clamp(30px, 5vw, 55px);
   align-items: center;
   justify-content: center;
 }
@@ -13,8 +13,9 @@
 .hero-content {
   display: flex;
   flex-direction: column;
-  width: 478px;
-  height: 639px;
+  width: 100%;
+  max-width: 478px;
+  min-height: auto;
 }
 
 .hero-title {
@@ -23,27 +24,26 @@
 }
 
 .hero-text-content {
-  padding: 99px 0 30px 0;
+  padding: clamp(30px, 8vw, 99px) 0 clamp(20px, 3vw, 30px) 0;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: clamp(10px, 2vw, 15px);
 }
 
 .hero-subtitle {
   color: var(--color-primary);
   font-family: 'Spicy Rice', sans-serif;
-  font-size: 40px;
   font-weight: 400;
   line-height: normal;
-  letter-spacing: 4px;
 }
 
 .hero-bio {
   color: var(--color-text);
   line-height: 1.5;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   font-family: Arial, sans-serif;
-  font-size: 20px;
+  font-size: clamp(16px, 2.5vw, 20px);
   font-weight: 700;
 }
 
@@ -64,31 +64,59 @@
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .hero-container {
+    gap: 40px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-section {
-    padding: 60px 20px;
+    padding: 40px 20px;
   }
 
   .hero-container {
     flex-direction: column;
+    gap: 30px;
   }
 
   .hero-content {
     width: 100%;
+    align-items: center;
+    text-align: center;
   }
 
   .hero-bio {
     width: 100%;
   }
 
+  .hero-socials {
+    justify-content: center;
+  }
+
   .hero-profile {
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
   }
 
   .hero-profile-frame {
     width: 100%;
     height: auto;
     aspect-ratio: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 30px 15px;
+  }
+
+  .hero-profile {
+    max-width: 280px;
+  }
+
+  .hero-socials {
+    flex-wrap: wrap;
+    gap: 12px;
   }
 }

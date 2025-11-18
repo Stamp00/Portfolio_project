@@ -239,3 +239,65 @@
     font-size: 28px;
   }
 }
+
+@media (max-width: 768px) {
+  .skills-computer {
+    max-width: 600px;
+    margin-bottom: 30px;
+  }
+
+  .skills-menu {
+    max-width: 100%;
+    gap: 30px;
+  }
+
+  .skills-title {
+    font-size: clamp(24px, 5vw, 40px);
+  }
+
+  .skills-category-button {
+    font-size: clamp(20px, 4vw, 28px);
+    width: auto;
+    min-width: 140px;
+    height: auto;
+    padding: 12px 28px;
+  }
+
+  .skills-button-wrapper {
+    gap: 25px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stack-screen-grid {
+    grid-template-columns: repeat(3, 50px);
+    gap: 15px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .skills-computer {
+    max-width: 100%;
+  }
+
+  .skills-panel {
+    border-width: 3px;
+    border-radius: 30px;
+  }
+
+  .skills-category-button {
+    min-width: 120px;
+    padding: 10px 20px;
+    font-size: clamp(18px, 4vw, 24px);
+  }
+
+  .skills-button-wrapper {
+    gap: 15px;
+  }
+
+  .stack-screen-grid {
+    grid-template-columns: repeat(3, 45px);
+    gap: 12px 10px;
+  }
+}

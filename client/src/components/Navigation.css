@@ -121,11 +121,140 @@
   width: 166px;
 }
 
+/* Hamburger Menu Button (Mobile Only) */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 60;
+}
+
+.hamburger-line {
+  width: 30px;
+  height: 3px;
+  background-color: var(--color-text);
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.hamburger-line.open:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger-line.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-line.open:nth-child(3) {
+  transform: rotate(-45deg) translate(8px, -8px);
+}
+
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .nav-logo-inner {
+    width: 120px;
+    height: 88px;
+    padding: 16px 0;
+  }
+
+  .nav-logo-text {
+    font-size: 30px;
+    width: 90px;
+  }
+
   .nav-links {
     width: auto;
+    font-size: 28px;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 10px 15px;
+  }
+
+  .nav-logo-inner {
+    width: 100px;
+    height: 73px;
+    padding: 12px 0;
+  }
+
+  .nav-logo-text {
     font-size: 24px;
-    flex-wrap: wrap;
+    width: 75px;
+  }
+
+  /* Show hamburger menu */
+  .nav-hamburger {
+    display: flex;
+  }
+
+  /* Hide menu container by default on mobile */
+  .nav-menu-container {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    max-width: 300px;
+    height: 100vh;
+    background-color: var(--color-secondary);
+    flex-direction: column;
+    padding: 80px 20px 20px;
+    gap: 30px;
+    transition: right 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 55;
+  }
+
+  .nav-menu-container.mobile-open {
+    right: 0;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    font-size: 32px;
+    gap: 20px;
+    padding: 0;
+    align-items: flex-start;
+  }
+
+  .nav-link-item {
+    width: 100%;
+  }
+
+  .nav-resume {
+    width: 100%;
+  }
+
+  .nav-resume .button-resume {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-logo-inner {
+    width: 85px;
+    height: 62px;
+    padding: 10px 0;
+  }
+
+  .nav-logo-text {
+    font-size: 20px;
+    width: 65px;
+  }
+
+  .nav-menu-container {
+    width: 80%;
+  }
+
+  .nav-links {
+    font-size: 28px;
   }
 }

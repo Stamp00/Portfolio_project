@@ -255,21 +255,57 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .file-explorer-split {
-    grid-template-columns: 1fr;
+    grid-template-columns: 300px 1fr;
     gap: 15px;
   }
 
   .file-explorer-list {
+    max-height: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .file-explorer {
+    gap: 15px;
+  }
+
+  .file-explorer-split {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 0 5px;
+  }
+
+  .file-explorer-toolbar {
+    padding: 0 5px;
+    gap: 10px;
+  }
+
+  .file-explorer-list {
     max-height: 300px;
+    border-width: 3px;
+    padding: 8px;
   }
 
   .file-explorer-preview {
-    max-height: 400px;
+    max-height: 450px;
+    border-width: 3px;
+    min-width: auto;
+  }
+
+  .file-explorer-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 16px;
+    padding: 8px;
   }
 
   .file-list-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .file-list-icon .file-icon-graphic {
     width: 40px;
     height: 40px;
   }
@@ -281,20 +317,19 @@
   .file-list-title {
     font-size: 20px;
   }
-}
 
-@media (max-width: 640px) {
-  .file-explorer-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 15px;
+  .file-list-item {
+    gap: 10px;
+    padding: 10px;
   }
 
   .file-viewer {
-    padding: 20px;
+    padding: 24px;
   }
 
   .file-viewer-title {
-    font-size: 22px;
+    font-size: 24px;
+    margin-bottom: 16px;
   }
 
   .file-viewer-description {
@@ -303,14 +338,115 @@
 
   .file-viewer-link {
     font-size: 18px;
-    padding: 10px 20px;
+    padding: 12px 20px;
+    border-width: 3px;
+  }
+
+  .project-links {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .file-explorer-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 12px;
+  }
+
+  .file-explorer-list {
+    border-radius: 12px;
+  }
+
+  .file-explorer-preview {
+    border-radius: 12px;
+  }
+
+  .file-viewer {
+    padding: 18px;
+  }
+
+  .file-viewer-title {
+    font-size: 20px;
+  }
+
+  .file-viewer-description {
+    font-size: 15px;
+  }
+
+  .file-viewer-link {
+    font-size: 16px;
+    padding: 10px 18px;
   }
 
   .file-list-item {
     padding: 8px;
+    gap: 8px;
   }
 
   .file-list-title {
     font-size: 18px;
+  }
+
+  .file-list-header {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .file-explorer-grid {
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+    gap: 10px;
+  }
+
+  .file-viewer {
+    padding: 15px;
+  }
+
+  .file-viewer-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .file-viewer-description {
+    font-size: 14px;
+  }
+
+  .file-viewer-link {
+    font-size: 15px;
+    padding: 10px 16px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .file-viewer-image {
+    max-width: 100%;
+    border-width: 2px;
+  }
+
+  .project-technologies-title {
+    font-size: 18px;
+  }
+
+  .file-list-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .file-list-icon .file-icon-graphic {
+    width: 36px;
+    height: 36px;
+  }
+
+  .file-list-name {
+    font-size: 14px;
+  }
+
+  .file-list-title {
+    font-size: 16px;
+  }
+
+  .file-list-item {
+    padding: 6px;
+    margin-bottom: 6px;
   }
 }

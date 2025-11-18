@@ -4,6 +4,7 @@ import './Navigation.css';
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState('hero');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', id: 'home' },
@@ -38,6 +39,7 @@ const Navigation = () => {
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
+    setIsMobileMenuOpen(false); // Close mobile menu when link is clicked
     const element = document.getElementById(id);
     if (element) {
       const navHeight = 80;
@@ -71,8 +73,19 @@ const Navigation = () => {
           </a>
         </div>
 
+        {/* Hamburger Menu Button (Mobile Only) */}
+        <button
+          className="nav-hamburger"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+          <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+          <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+        </button>
+
         {/* Menu and Resume */}
-        <div className="nav-menu-container">
+        <div className={`nav-menu-container ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
           {/* Menu Links */}
           <div className="nav-links">
             {navLinks.map((link) => (
@@ -91,7 +104,10 @@ const Navigation = () => {
           {/* Get Resume Button */}
           <div className="nav-resume">
             <Button
-              onClick={() => window.open('/resume.pdf', '_blank')}
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                window.open('/resume.pdf', '_blank');
+              }}
               className="button-resume"
             >
               <span>Get Resume</span>
