@@ -13,6 +13,17 @@
   margin: 0 auto;
 }
 
+/* Desktop Layout - Show by default */
+.about-desktop {
+  display: block;
+  width: 100%;
+}
+
+/* Mobile Layout - Hide by default */
+.about-mobile {
+  display: none;
+}
+
 .about-grid {
   display: flex;
   padding: 0 43px;
@@ -20,6 +31,8 @@
   align-items: flex-end;
   gap: -138px;
   align-self: stretch;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 .about-left-column {
@@ -28,6 +41,8 @@
   flex-direction: column;
   align-items: center;
   gap: 22px;
+  flex: 1;
+  min-width: 0;
 }
 
 .about-title {
@@ -42,8 +57,17 @@
 }
 
 .about-character {
-  width: 623px;
-  height: 935px;
+  width: 700px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-character svg {
+  width: 100%;
+  height: auto;
+  min-width: 700px;
 }
 
 .about-speech-column {
@@ -51,11 +75,13 @@
   padding: 58px 10px;
   align-items: center;
   gap: 10px;
+  flex: 1;
 }
 
 .about-speech-wrapper {
-  width: 610.578px;
-  height: 964.703px;
+  width: 100%;
+  max-width: 800px;
+  height: auto;
 }
 
 /* .SpeechBubble {
@@ -69,64 +95,149 @@
 } */
 
 /* Responsive */
+@media (max-width: 1400px) {
+  .about-character {
+    width: 600px;
+  }
+
+  .about-character svg {
+    min-width: 600px;
+  }
+}
+
 @media (max-width: 1200px) {
   .about-grid {
     flex-direction: column;
-    gap: 20px;
+    gap: -138px;
     padding: 0 20px;
   }
 
   .about-character {
-    width: 100%;
-    max-width: 450px;
-    height: auto;
+    width: 500px;
+  }
+
+  .about-character svg {
+    min-width: 500px;
   }
 
   .about-speech-wrapper {
     width: 100%;
-    max-width: 500px;
+    max-width: 650px;
     height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .about-character {
+    width: 400px;
+  }
+
+  .about-character svg {
+    min-width: 400px;
   }
 }
 
 @media (max-width: 768px) {
-  .about-section {
-    padding: 40px 0;
+  /* Hide desktop layout */
+  .about-desktop {
+    display: none;
   }
 
-  .about-grid {
-    padding: 0 15px;
+  /* Show mobile layout */
+  .about-mobile {
+    display: block;
+    width: 100%;
+    padding: 50px 0;
   }
 
-  .about-left-column {
-    padding-top: 20px;
-    gap: 15px;
-  }
-
-  .about-title {
-    font-size: clamp(24px, 5vw, 40px);
-    letter-spacing: clamp(2px, 0.5vw, 4px);
-  }
-
-  .about-character {
-    max-width: 350px;
-  }
-
-  .about-speech-column {
-    padding: 30px 10px;
-  }
-
-  .about-speech-wrapper {
+  .about-mobile-container {
     max-width: 100%;
+    padding: 0 24px;
+  }
+
+  .about-mobile-title {
+    color: var(--Primary-Color, #ED6A5A);
+    font-family: "Spicy Rice";
+    font-size: clamp(32px, 7vw, 40px);
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 3px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .about-mobile-content {
+    background: transparent;
+  }
+
+  .about-mobile-content p {
+    font-size: 17px !important;
+    line-height: 1.8 !important;
+    margin-bottom: 24px !important;
+    color: #66635B !important;
+  }
+
+  .about-mobile-content strong {
+    font-weight: 700;
+    color: #ED6A5A;
+  }
+
+  .about-mobile-content h3,
+  .about-mobile-content span[style*="bold"] {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #ED6A5A !important;
+    margin-bottom: 16px !important;
+    display: block;
+  }
+
+  .about-mobile-content ul {
+    font-size: 17px !important;
+    line-height: 1.8 !important;
+    margin-bottom: 24px !important;
+    padding-left: 24px !important;
+    color: #66635B !important;
+  }
+
+  .about-mobile-content li {
+    margin-bottom: 12px;
+  }
+
+  .about-mobile-content a {
+    color: #ED6A5A !important;
+    text-decoration: underline;
+    font-weight: 600;
   }
 }
 
 @media (max-width: 480px) {
-  .about-character {
-    max-width: 280px;
+  .about-mobile {
+    padding: 40px 0;
   }
 
-  .about-speech-column {
-    padding: 20px 5px;
+  .about-mobile-container {
+    padding: 0 20px;
+  }
+
+  .about-mobile-title {
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 32px;
+  }
+
+  .about-mobile-content p {
+    font-size: 16px !important;
+    line-height: 1.7 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .about-mobile-content h3,
+  .about-mobile-content span[style*="bold"] {
+    font-size: 22px !important;
+  }
+
+  .about-mobile-content ul {
+    font-size: 16px !important;
+    padding-left: 20px !important;
   }
 }

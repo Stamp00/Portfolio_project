@@ -29,8 +29,8 @@ const ProjectsSection = ({ projects }: ProjectsSectionProps) => {
           Projects & Education
         </h2>
 
-        {/* Retro Computer Screen */}
-        <div className="projects-screen-wrapper">
+        {/* Desktop Version - Retro Computer Screen */}
+        <div className="projects-screen-wrapper projects-desktop">
           <ProjectsRetroScreen>
             {fileSystemItems.length === 0 ? (
               <div className="projects-empty">
@@ -42,6 +42,17 @@ const ProjectsSection = ({ projects }: ProjectsSectionProps) => {
               <FileExplorer items={fileSystemItems} />
             )}
           </ProjectsRetroScreen>
+        </div>
+
+        {/* Mobile Version - Clean Layout (no TV frame) */}
+        <div className="projects-mobile">
+          {fileSystemItems.length === 0 ? (
+            <div className="projects-mobile-empty">
+              <p>No projects yet. Check back soon!</p>
+            </div>
+          ) : (
+            <FileExplorer items={fileSystemItems} />
+          )}
         </div>
       </div>
     </section>

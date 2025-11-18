@@ -104,7 +104,8 @@ const AboutSection = ({ bio }: AboutSectionProps) => {
 
   return (
     <section id="about" className="about-section">
-      {/* <div className="about-container"> */}
+      {/* Desktop Layout */}
+      <div className="about-desktop">
         <div className="about-grid">
           {/* Left: Title + Character Illustration */}
           <div className="about-left-column">
@@ -121,14 +122,26 @@ const AboutSection = ({ bio }: AboutSectionProps) => {
 
           {/* Right: Speech Bubble */}
           <div className='about-speech-column'>
-          <div className="about-speech-wrapper">
-            <SpeechBubble>
-              {formatBioText(bio)}
-            </SpeechBubble>
-          </div>
+            <div className="about-speech-wrapper">
+              <SpeechBubble>
+                {formatBioText(bio)}
+              </SpeechBubble>
+            </div>
           </div>
         </div>
-      {/* </div> */}
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="about-mobile">
+        <div className="about-mobile-container">
+          <h2 className="about-mobile-title">
+            About Me
+          </h2>
+          <div className="about-mobile-content">
+            {formatBioText(bio)}
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
