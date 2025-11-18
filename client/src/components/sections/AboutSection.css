@@ -42,8 +42,12 @@
 }
 
 .about-character {
-  width: 623px;
-  height: 935px;
+  width: 100%;
+  max-width: 623px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .about-speech-column {
@@ -54,8 +58,9 @@
 }
 
 .about-speech-wrapper {
-  width: 610.578px;
-  height: 964.703px;
+  width: 100%;
+  max-width: 610.578px;
+  height: auto;
 }
 
 /* .SpeechBubble {

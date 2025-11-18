@@ -54,6 +54,14 @@
 
 .hero-profile {
   flex-shrink: 0;
+  width: 100%;
+  max-width: 639px;
+}
+
+.hero-profile-frame {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
 }
 
 .hero-profile-inner {
@@ -95,14 +103,7 @@
   }
 
   .hero-profile {
-    width: 100%;
     max-width: 350px;
-  }
-
-  .hero-profile-frame {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1;
   }
 }
 
