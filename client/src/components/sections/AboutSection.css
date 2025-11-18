@@ -43,7 +43,7 @@
 
 .about-character {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   height: auto;
   display: flex;
   justify-content: center;
@@ -59,7 +59,7 @@
 
 .about-speech-wrapper {
   width: 100%;
-  max-width: 610.578px;
+  max-width: 800px;
   height: auto;
 }
 
@@ -83,13 +83,13 @@
 
   .about-character {
     width: 100%;
-    max-width: 450px;
+    max-width: 600px;
     height: auto;
   }
 
   .about-speech-wrapper {
     width: 100%;
-    max-width: 500px;
+    max-width: 650px;
     height: auto;
   }
 }
