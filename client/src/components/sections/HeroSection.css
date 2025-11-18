@@ -88,6 +88,12 @@
     gap: 30px;
   }
 
+  /* Profile picture appears first on mobile */
+  .hero-profile {
+    order: -1;
+    max-width: 350px;
+  }
+
   .hero-content {
     width: 100%;
     align-items: center;
@@ -100,10 +106,6 @@
 
   .hero-socials {
     justify-content: center;
-  }
-
-  .hero-profile {
-    max-width: 350px;
   }
 }
 

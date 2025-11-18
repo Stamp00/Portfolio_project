@@ -101,11 +101,15 @@
 
   .about-grid {
     padding: 0 15px;
+    flex-direction: column;
+    align-items: center;
   }
 
   .about-left-column {
     padding-top: 20px;
     gap: 15px;
+    width: 100%;
+    align-items: center;
   }
 
   .about-title {
@@ -113,12 +117,14 @@
     letter-spacing: clamp(2px, 0.5vw, 4px);
   }
 
+  /* Hide character illustration on mobile */
   .about-character {
-    max-width: 350px;
+    display: none;
   }
 
   .about-speech-column {
     padding: 30px 10px;
+    width: 100%;
   }
 
   .about-speech-wrapper {
@@ -127,10 +133,6 @@
 }
 
 @media (max-width: 480px) {
-  .about-character {
-    max-width: 280px;
-  }
-
   .about-speech-column {
     padding: 20px 5px;
   }
