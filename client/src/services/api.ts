@@ -1,7 +1,23 @@
 import axios from 'axios';
-import type { Project, ContactMessage, PersonalInfo, Skill, Experience, Education, HeroInfo, AboutInfo, ContactInfo } from '../types';
+import type {
+  Project,
+  ContactMessage,
+  PersonalInfo,
+  Skill,
+  Experience,
+  Education,
+  HeroInfo,
+  AboutInfo,
+  ContactInfo,
+} from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Make sure API URL always points to the backend root
+const RAW_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+// Ensure it ends with /api exactly once
+const API_URL = RAW_API_URL.endsWith('/api')
+  ? RAW_API_URL
+  : `${RAW_API_URL}/api`;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -30,12 +46,17 @@ export const getProjectById = async (id: string): Promise<Project> => {
   return response.data;
 };
 
-export const createProject = async (project: Omit<Project, '_id' | 'createdAt' | 'updatedAt'>): Promise<Project> => {
+export const createProject = async (
+  project: Omit<Project, '_id' | 'createdAt' | 'updatedAt'>
+): Promise<Project> => {
   const response = await api.post('/projects', project);
   return response.data;
 };
 
-export const updateProject = async (id: string, project: Partial<Project>): Promise<Project> => {
+export const updateProject = async (
+  id: string,
+  project: Partial<Project>
+): Promise<Project> => {
   const response = await api.put(`/projects/${id}`, project);
   return response.data;
 };
@@ -45,13 +66,18 @@ export const deleteProject = async (id: string): Promise<void> => {
 };
 
 // Contact
-export const sendContactMessage = async (message: ContactMessage): Promise<{ message: string }> => {
+export const sendContactMessage = async (
+  message: ContactMessage
+): Promise<{ message: string }> => {
   const response = await api.post('/contact', message);
   return response.data;
 };
 
 // Admin Auth
-export const adminLogin = async (email: string, password: string): Promise<{ token: string }> => {
+export const adminLogin = async (
+  email: string,
+  password: string
+): Promise<{ token: string }> => {
   const response = await api.post('/admin/login', { email, password });
   return response.data;
 };
@@ -64,7 +90,9 @@ export const getPersonalInfo = async (): Promise<PersonalInfo> => {
   return response.data;
 };
 
-export const updatePersonalInfo = async (data: Partial<PersonalInfo>): Promise<PersonalInfo> => {
+export const updatePersonalInfo = async (
+  data: Partial<PersonalInfo>
+): Promise<PersonalInfo> => {
   const response = await api.put('/content/personal-info', data);
   return response.data;
 };
@@ -75,7 +103,9 @@ export const getHeroInfo = async (): Promise<HeroInfo> => {
   return response.data;
 };
 
-export const updateHeroInfo = async (data: Partial<HeroInfo>): Promise<HeroInfo> => {
+export const updateHeroInfo = async (
+  data: Partial<HeroInfo>
+): Promise<HeroInfo> => {
   const response = await api.put('/content/hero-info', data);
   return response.data;
 };
@@ -86,7 +116,9 @@ export const getAboutInfo = async (): Promise<AboutInfo> => {
   return response.data;
 };
 
-export const updateAboutInfo = async (data: Partial<AboutInfo>): Promise<AboutInfo> => {
+export const updateAboutInfo = async (
+  data: Partial<AboutInfo>
+): Promise<AboutInfo> => {
   const response = await api.put('/content/about-info', data);
   return response.data;
 };
@@ -97,7 +129,9 @@ export const getContactInfo = async (): Promise<ContactInfo> => {
   return response.data;
 };
 
-export const updateContactInfo = async (data: Partial<ContactInfo>): Promise<ContactInfo> => {
+export const updateContactInfo = async (
+  data: Partial<ContactInfo>
+): Promise<ContactInfo> => {
   const response = await api.put('/content/contact-info', data);
   return response.data;
 };
@@ -108,12 +142,17 @@ export const getAllSkills = async (): Promise<Skill[]> => {
   return response.data;
 };
 
-export const createSkill = async (skill: Omit<Skill, '_id'>): Promise<Skill> => {
+export const createSkill = async (
+  skill: Omit<Skill, '_id'>
+): Promise<Skill> => {
   const response = await api.post('/content/skills', skill);
   return response.data;
 };
 
-export const updateSkill = async (id: string, skill: Partial<Skill>): Promise<Skill> => {
+export const updateSkill = async (
+  id: string,
+  skill: Partial<Skill>
+): Promise<Skill> => {
   const response = await api.put(`/content/skills/${id}`, skill);
   return response.data;
 };
@@ -128,12 +167,17 @@ export const getAllExperience = async (): Promise<Experience[]> => {
   return response.data;
 };
 
-export const createExperience = async (experience: Omit<Experience, '_id'>): Promise<Experience> => {
+export const createExperience = async (
+  experience: Omit<Experience, '_id'>
+): Promise<Experience> => {
   const response = await api.post('/content/experience', experience);
   return response.data;
 };
 
-export const updateExperience = async (id: string, experience: Partial<Experience>): Promise<Experience> => {
+export const updateExperience = async (
+  id: string,
+  experience: Partial<Experience>
+): Promise<Experience> => {
   const response = await api.put(`/content/experience/${id}`, experience);
   return response.data;
 };
@@ -148,12 +192,17 @@ export const getAllEducation = async (): Promise<Education[]> => {
   return response.data;
 };
 
-export const createEducation = async (education: Omit<Education, '_id'>): Promise<Education> => {
+export const createEducation = async (
+  education: Omit<Education, '_id'>
+): Promise<Education> => {
   const response = await api.post('/content/education', education);
   return response.data;
 };
 
-export const updateEducation = async (id: string, education: Partial<Education>): Promise<Education> => {
+export const updateEducation = async (
+  id: string,
+  education: Partial<Education>
+): Promise<Education> => {
   const response = await api.put(`/content/education/${id}`, education);
   return response.data;
 };
